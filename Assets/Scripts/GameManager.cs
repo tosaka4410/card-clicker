@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour
     private readonly DeckSystem deck = new();
     private readonly List<CardData> hand = new();
     private BuildingSystem buildings = new();
+    private List<UpgradeChoice> currentUpgradeChoices = new();
 
     private GameContext ctx;
     private bool ended;
@@ -304,20 +305,34 @@ public class GameManager : MonoBehaviour
         foreach (Transform c in upgradeOptionsRoot)
             Destroy(c.gameObject);
 
-        // ★ UpgradeData を3つ引く
+        currentUpgradeChoices.Clear();
+
+        // Upgradeを3つ引く
         var upgrades = upgradeSystem.RollUpgrades(3);
 
         foreach (var up in upgrades)
         {
-            var btn = Instantiate(upgradeButtonPrefab, upgradeOptionsRoot);
-            var texts = btn.GetComponentsInChildren<Text>();
+            if (startingDeck.Count == 0)
+                continue;
 
-            texts[0].text = up.title;
-            texts[1].text = up.description;
+            // ★ このUpgrade専用の対象カードを確定
+            var targetCard = startingDeck[Random.Range(0, startingDeck.Count)];
+
+            var choice = new UpgradeChoice { upgrade = up, targetCard = targetCard };
+            currentUpgradeChoices.Add(choice);
+
+            var btn = Instantiate(upgradeButtonPrefab, upgradeOptionsRoot);
+            var view = btn.GetComponent<UpgradeButtonView>();
+
+            // 表示内容
+            string title = up.title;
+            string desc = $"{up.description}\n\n" + $"Target: {targetCard.cardName}";
+
+            view.Bind(title, desc);
 
             btn.onClick.AddListener(() =>
             {
-                ApplyUpgradeToRandomCard(up.addEffect);
+                ApplyUpgrade(choice);
                 upgradeModal.SetActive(false);
 
                 goal = Mathf.RoundToInt(goal * 1.35f + 200);
@@ -327,18 +342,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void ApplyUpgradeToRandomCard(CardEffect addEffect)
+    void ApplyUpgrade(UpgradeChoice choice)
     {
-        if (startingDeck.Count == 0)
+        var target = choice.targetCard;
+
+        int idx = startingDeck.IndexOf(target);
+        if (idx < 0)
+        {
+            Debug.LogWarning("[Upgrade] Target card not found in deck");
             return;
+        }
 
-        int idx = Random.Range(0, startingDeck.Count);
-        var original = startingDeck[idx];
-
-        var upgraded = upgradeSystem.CloneAndAddEffect(original, addEffect);
+        var upgraded = upgradeSystem.CloneAndAddEffect(target, choice.upgrade.addEffect);
         startingDeck[idx] = upgraded;
 
-        Debug.Log($"[Upgrade] {original.cardName} gets +{addEffect.name}");
+        Debug.Log($"[Upgrade] {target.cardName} gets {choice.upgrade.addEffect.name}");
     }
 
     void OpenShop()

@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 4782130291841120570}
   - component: {fileID: 548124435762770675}
   - component: {fileID: 34685002601646607}
+  - component: {fileID: 2628666716756241304}
   m_Layer: 5
   m_Name: UpgradeOptionButtonPrefab
   m_TagString: Untagged
@@ -201,6 +202,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2628666716756241304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3533149486342008157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3364094646104bf4a924128741f300ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeButtonView
+  titleText: {fileID: 4698281659967265501}
+  descriptionText: {fileID: 6396757303361923398}
 --- !u!1 &7145510137595195028
 GameObject:
   m_ObjectHideFlags: 0
