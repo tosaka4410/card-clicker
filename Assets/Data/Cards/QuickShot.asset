@@ -15,5 +15,5 @@ MonoBehaviour:
   cardName: Strike+
   description: 
   effects:
-  - {fileID: 11400000, guid: c961301e19432b24da6a5eacb5ae3bb1, type: 2}
-  - {fileID: 11400000, guid: bad061489c3a15d468cf7462fe5e0597, type: 2}
+  - {fileID: 11400000, guid: c22f759ebfa8ad5458b860dd5dcd89ba, type: 2}
+  - {fileID: 11400000, guid: 1617965b9d9412349901ea1ce83bc86c, type: 2}

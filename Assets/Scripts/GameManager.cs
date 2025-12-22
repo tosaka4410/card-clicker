@@ -298,25 +298,28 @@ public class GameManager : MonoBehaviour
     void ShowUpgradeChoices()
     {
         upgradeModal.SetActive(true);
+        upgradeModal.transform.SetAsLastSibling();
         upgradeTitleText.text = "Choose one upgrade";
 
-        // 既存ボタン削除
         foreach (Transform c in upgradeOptionsRoot)
             Destroy(c.gameObject);
 
-        var effects = upgradeSystem.Roll3Effects();
+        // ★ UpgradeData を3つ引く
+        var upgrades = upgradeSystem.RollUpgrades(3);
 
-        for (int i = 0; i < effects.Count; i++)
+        foreach (var up in upgrades)
         {
-            var e = effects[i];
             var btn = Instantiate(upgradeButtonPrefab, upgradeOptionsRoot);
-            btn.GetComponentInChildren<Text>().text = $"+ {e.name}";
+            var texts = btn.GetComponentsInChildren<Text>();
+
+            texts[0].text = up.title;
+            texts[1].text = up.description;
+
             btn.onClick.AddListener(() =>
             {
-                ApplyUpgradeToRandomCard(e);
+                ApplyUpgradeToRandomCard(up.addEffect);
                 upgradeModal.SetActive(false);
 
-                // 次ステージ進行（MVP）
                 goal = Mathf.RoundToInt(goal * 1.35f + 200);
                 stageTime = Mathf.Max(60f, stageTime - 5f);
                 StartStage();
@@ -362,20 +365,33 @@ public class GameManager : MonoBehaviour
 
         foreach (var item in items)
         {
-            var btn = Instantiate(shopItemButtonPrefab, shopItemsRoot);
-            btn.GetComponentInChildren<Text>().text = $"{item.card.cardName}\nCost: {item.cost}";
+            var go = Instantiate(shopItemButtonPrefab, shopItemsRoot);
 
-            btn.interactable = score >= item.cost;
-
-            btn.onClick.AddListener(() =>
+            var view = go.GetComponent<CardView>();
+            if (view == null)
             {
-                if (!TryPayScore(item.cost))
-                    return;
+                Debug.LogError("[Shop] ShopItemPrefab has no CardView");
+                continue;
+            }
 
-                BuyCard(item.card);
-                btn.interactable = false;
-                btn.GetComponentInChildren<Text>().text += "\nSOLD";
-            });
+            // カード表示は CardView に任せる
+            view.Bind(
+                item.card,
+                () =>
+                {
+                    if (!TryPayScore(item.cost))
+                        return;
+
+                    BuyCard(item.card);
+                    view.button.interactable = false;
+
+                    // 購入後の表示を変えたい場合
+                    view.bodyText.text += "\n<SOLD>";
+                }
+            );
+
+            // ★ Shop 用にコスト表示を足す
+            view.bodyText.text += $"\nCost: {item.cost}";
         }
 
         rerollButton.onClick.RemoveAllListeners();

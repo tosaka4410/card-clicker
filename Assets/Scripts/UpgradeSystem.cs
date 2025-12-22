@@ -5,20 +5,7 @@ public class UpgradeSystem : MonoBehaviour
 {
     [Header("追加効果プール（ここから付与）")]
     public List<CardEffect> possibleEffects = new();
-
-    public List<CardEffect> Roll3Effects()
-    {
-        // 雑に3つ選ぶ（重複は許す or 後で禁止）
-        var results = new List<CardEffect>();
-        if (possibleEffects.Count == 0) return results;
-
-        for (int i = 0; i < 3; i++)
-        {
-            var e = possibleEffects[Random.Range(0, possibleEffects.Count)];
-            results.Add(e);
-        }
-        return results;
-    }
+    public List<UpgradeData> upgradePool = new();
 
     public CardData CloneAndAddEffect(CardData original, CardEffect addEffect)
     {
@@ -28,5 +15,24 @@ public class UpgradeSystem : MonoBehaviour
         clone.effects = new List<CardEffect>(original.effects);
         clone.effects.Add(addEffect);
         return clone;
+    }
+
+    public List<UpgradeData> RollUpgrades(int count = 3)
+    {
+        var results = new List<UpgradeData>();
+
+        if (upgradePool.Count == 0)
+            return results;
+
+        var temp = new List<UpgradeData>(upgradePool);
+
+        for (int i = 0; i < count && temp.Count > 0; i++)
+        {
+            int idx = Random.Range(0, temp.Count);
+            results.Add(temp[idx]);
+            temp.RemoveAt(idx); // 重複防止
+        }
+
+        return results;
     }
 }
