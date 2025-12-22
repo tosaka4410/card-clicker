@@ -18,6 +18,29 @@ public class GameManager : MonoBehaviour
     public List<CardData> startingDeck = new();
     public List<BuildingDef> buildingDefs = new();
 
+    [Header("Upgrade")]
+    public UpgradeSystem upgradeSystem;
+    public GameObject upgradeModal;
+    public Text upgradeTitleText;
+    public Button upgradeButtonPrefab; // 既存ボタンPrefab流用でもOK
+    public Transform upgradeOptionsRoot;
+
+    [Header("Shop")]
+    public ShopSystem shopSystem;
+    public GameObject shopModal;
+    public Transform shopItemsRoot;
+    public Button shopItemButtonPrefab;
+    public Button rerollButton;
+    public Button openShopButton; // HUDに追加
+    public Button closeShopButton; // HUDに追加
+
+    [Header("Deck View")]
+    public GameObject deckViewModal;
+    public Transform deckViewContent;
+    public GameObject deckCardItemPrefab;
+    public Button openDeckViewButton;
+    public Button closeDeckViewButton;
+
     [Header("UI")]
     public Text timeText;
     public Text scoreText;
@@ -48,6 +71,10 @@ public class GameManager : MonoBehaviour
     {
         ctx = new GameContext(this);
         StartStage();
+        openShopButton.onClick.AddListener(OpenShop);
+        closeShopButton.onClick.AddListener(CloseShop);
+        openDeckViewButton.onClick.AddListener(OpenDeckView);
+        closeDeckViewButton.onClick.AddListener(CloseDeckView);
     }
 
     void Update()
@@ -90,6 +117,7 @@ public class GameManager : MonoBehaviour
         ended = false;
         resultModal.SetActive(false);
 
+        Time.timeScale = 1f; // ← 念のため必ず戻す
         timeLeft = stageTime;
         drawTimer = 0f;
         score = 0;
@@ -193,18 +221,53 @@ public class GameManager : MonoBehaviour
         UpdateHandUI();
     }
 
+    public void AddTime(float seconds)
+    {
+        if (ended)
+            return;
+        timeLeft += seconds;
+    }
+
+    public int ConsumeAllScore()
+    {
+        int lost = score;
+        score = 0;
+        return lost;
+    }
+
     void PlayCard(CardData card)
     {
         if (ended)
             return;
 
-        // 効果はすべて同時（順序はリスト順）
+        // ★このカードプレイ用の文脈を初期化
+        ctx.Multiplier = 1;
+        ctx.ExhaustThisCard = false;
+
+        Debug.Log($"[GameManager] PlayCard: {card.cardName}");
+
         foreach (var e in card.effects)
-            if (e != null)
-                e.Apply(ctx);
+        {
+            if (e == null)
+                continue;
+            Debug.Log($"[GameManager] Apply effect: {e.name}");
+            e.Apply(ctx);
+        }
 
         hand.Remove(card);
-        deck.Discard(card);
+
+        if (ctx.ExhaustThisCard)
+        {
+            Debug.Log($"[GameManager] Exhausted: {card.cardName} (removed from game)");
+            // 捨て札にも戻さない＝消滅
+            // ついでに startingDeck からも消したいなら下をON（MVP仕様次第）
+            // startingDeck.Remove(card);
+        }
+        else
+        {
+            deck.Discard(card);
+        }
+
         UpdateHandUI();
     }
 
@@ -220,18 +283,164 @@ public class GameManager : MonoBehaviour
         nextButton.onClick.RemoveAllListeners();
         retryButton.onClick.RemoveAllListeners();
 
-        nextButton.onClick.AddListener(() =>
+        if (cleared)
         {
-            // MVP：次ステージは goal と時間だけ上げる
-            goal = Mathf.RoundToInt(goal * 1.35f + 200);
-            stageTime = Mathf.Max(60f, stageTime - 5f);
-            StartStage();
-        });
+            nextButton.onClick.AddListener(() =>
+            {
+                resultModal.SetActive(false);
+                ShowUpgradeChoices();
+            });
+        }
 
-        retryButton.onClick.AddListener(() =>
+        retryButton.onClick.AddListener(() => StartStage());
+    }
+
+    void ShowUpgradeChoices()
+    {
+        upgradeModal.SetActive(true);
+        upgradeTitleText.text = "Choose one upgrade";
+
+        // 既存ボタン削除
+        foreach (Transform c in upgradeOptionsRoot)
+            Destroy(c.gameObject);
+
+        var effects = upgradeSystem.Roll3Effects();
+
+        for (int i = 0; i < effects.Count; i++)
         {
-            // MVP：施設の建設数は保持したまま再挑戦しても気持ちいい（後で調整）
-            StartStage();
-        });
+            var e = effects[i];
+            var btn = Instantiate(upgradeButtonPrefab, upgradeOptionsRoot);
+            btn.GetComponentInChildren<Text>().text = $"+ {e.name}";
+            btn.onClick.AddListener(() =>
+            {
+                ApplyUpgradeToRandomCard(e);
+                upgradeModal.SetActive(false);
+
+                // 次ステージ進行（MVP）
+                goal = Mathf.RoundToInt(goal * 1.35f + 200);
+                stageTime = Mathf.Max(60f, stageTime - 5f);
+                StartStage();
+            });
+        }
+    }
+
+    void ApplyUpgradeToRandomCard(CardEffect addEffect)
+    {
+        if (startingDeck.Count == 0)
+            return;
+
+        int idx = Random.Range(0, startingDeck.Count);
+        var original = startingDeck[idx];
+
+        var upgraded = upgradeSystem.CloneAndAddEffect(original, addEffect);
+        startingDeck[idx] = upgraded;
+
+        Debug.Log($"[Upgrade] {original.cardName} gets +{addEffect.name}");
+    }
+
+    void OpenShop()
+    {
+        if (ended)
+            return;
+
+        shopModal.SetActive(true);
+        RefreshShop(false);
+    }
+
+    void RefreshShop(bool isReroll)
+    {
+        if (isReroll)
+        {
+            if (!TryPayScore(shopSystem.rerollCost))
+                return;
+        }
+
+        foreach (Transform c in shopItemsRoot)
+            Destroy(c.gameObject);
+
+        var items = shopSystem.GenerateLineup();
+
+        foreach (var item in items)
+        {
+            var btn = Instantiate(shopItemButtonPrefab, shopItemsRoot);
+            btn.GetComponentInChildren<Text>().text = $"{item.card.cardName}\nCost: {item.cost}";
+
+            btn.interactable = score >= item.cost;
+
+            btn.onClick.AddListener(() =>
+            {
+                if (!TryPayScore(item.cost))
+                    return;
+
+                BuyCard(item.card);
+                btn.interactable = false;
+                btn.GetComponentInChildren<Text>().text += "\nSOLD";
+            });
+        }
+
+        rerollButton.onClick.RemoveAllListeners();
+        rerollButton.GetComponentInChildren<Text>().text = $"Reroll ({shopSystem.rerollCost})";
+        rerollButton.interactable = score >= shopSystem.rerollCost;
+        rerollButton.onClick.AddListener(() => RefreshShop(true));
+    }
+
+    void BuyCard(CardData card)
+    {
+        startingDeck.Add(card);
+
+        Debug.Log($"[Shop] Bought card: {card.cardName}");
+
+        // すぐ出したいならこれも可（任意）
+        // deck.AddToDiscard(card);
+    }
+
+    public void CloseShop()
+    {
+        shopModal.SetActive(false);
+    }
+
+    void OpenDeckView()
+    {
+        if (ended)
+            return;
+
+        Time.timeScale = 0f;
+        deckViewModal.SetActive(true);
+
+        RefreshDeckView();
+    }
+
+    void RefreshDeckView()
+    {
+        if (deckViewContent == null || deckCardItemPrefab == null)
+        {
+            return;
+        }
+
+        int before = deckViewContent.childCount;
+        for (int i = deckViewContent.childCount - 1; i >= 0; i--)
+            Destroy(deckViewContent.GetChild(i).gameObject);
+
+        foreach (var card in startingDeck)
+        {
+            var go = Instantiate(deckCardItemPrefab, deckViewContent);
+
+            var view = go.GetComponent<DeckCardItemView>();
+            if (view == null)
+            {
+                Debug.LogError("[DeckView] DeckCardItemPrefab has no DeckCardItemView");
+                continue;
+            }
+
+            view.Bind(card);
+        }
+    }
+
+    void CloseDeckView()
+    {
+        Debug.Log("[DeckView] Close");
+
+        deckViewModal.SetActive(false);
+        Time.timeScale = 1f;
     }
 }

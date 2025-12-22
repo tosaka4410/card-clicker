@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 4784671297119970131}
   - component: {fileID: 110504398084187911}
   - component: {fileID: 2855586261413236371}
+  - component: {fileID: 2911377074808984951}
   m_Layer: 5
-  m_Name: CardPrefab
+  m_Name: DeckCardItemPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -159,6 +160,20 @@ MonoBehaviour:
   titleText: {fileID: 1068880026469861564}
   bodyText: {fileID: 8130686985797248593}
   button: {fileID: 4784671297119970131}
+--- !u!114 &2911377074808984951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4537354698048255725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afaf05ab44c39ed459ae38f670ef166d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeckCardItemView
+  nameText: {fileID: 1068880026469861564}
+  effectsText: {fileID: 8130686985797248593}
 --- !u!1 &7424654797572791107
 GameObject:
   m_ObjectHideFlags: 0
