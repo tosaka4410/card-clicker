@@ -4,35 +4,27 @@ using UnityEngine;
 
 public class ShopSystem : MonoBehaviour
 {
-    [Header("Shop Pool")]
     public List<CardData> cardPool = new();
 
-    [Header("Config")]
     public int itemCount = 3;
     public int rerollCost = 50;
     public int baseCardCost = 100;
 
-    private List<ShopItem> currentItems = new();
+    private readonly List<ShopItem> currentItems = new();
 
-    public List<ShopItem> GenerateLineup()
+    public IReadOnlyList<ShopItem> CurrentItems => currentItems;
+
+    public void GenerateLineup()
     {
         currentItems.Clear();
+        if (cardPool.Count == 0) return;
 
         for (int i = 0; i < itemCount; i++)
         {
             var card = cardPool[Random.Range(0, cardPool.Count)];
-            currentItems.Add(new ShopItem
-            {
-                card = card,
-                cost = baseCardCost
-            });
+            currentItems.Add(new ShopItem { card = card, cost = baseCardCost });
         }
-
-        return currentItems;
     }
 
-    public List<ShopItem> Reroll()
-    {
-        return GenerateLineup();
-    }
+    public void Reroll() => GenerateLineup();
 }

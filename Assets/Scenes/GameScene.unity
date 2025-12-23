@@ -326,6 +326,7 @@ GameObject:
   - component: {fileID: 105097433}
   - component: {fileID: 105097435}
   - component: {fileID: 105097434}
+  - component: {fileID: 105097436}
   m_Layer: 5
   m_Name: UpgradeModal
   m_TagString: Untagged
@@ -392,6 +393,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 105097432}
   m_CullTransparentMesh: 1
+--- !u!114 &105097436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105097432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b86e58ef05be687478d1f2b1a209ec45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeController
+  upgradeModal: {fileID: 105097432}
+  upgradeTitleText: {fileID: 1390276594}
+  upgradeButtonPrefab: {fileID: 34685002601646607, guid: ea66abb6a8ac3b44fb834b96066088f8, type: 3}
+  upgradeOptionsRoot: {fileID: 1002709781}
 --- !u!1 &194747186
 GameObject:
   m_ObjectHideFlags: 0
@@ -846,83 +863,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 438259532}
   m_CullTransparentMesh: 1
---- !u!1 &489827347
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 489827348}
-  - component: {fileID: 489827350}
-  - component: {fileID: 489827349}
-  m_Layer: 5
-  m_Name: BuildPanel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &489827348
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489827347}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2084398163}
-  - {fileID: 914667675}
-  m_Father: {fileID: 788608797}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 315.58008, y: 0}
-  m_SizeDelta: {x: 328.84003, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &489827349
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489827347}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &489827350
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489827347}
-  m_CullTransparentMesh: 1
 --- !u!1 &500952301
 GameObject:
   m_ObjectHideFlags: 0
@@ -1201,6 +1141,7 @@ GameObject:
   - component: {fileID: 571128053}
   - component: {fileID: 571128055}
   - component: {fileID: 571128054}
+  - component: {fileID: 571128056}
   m_Layer: 5
   m_Name: RelicModal
   m_TagString: Untagged
@@ -1267,6 +1208,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 571128052}
   m_CullTransparentMesh: 1
+--- !u!114 &571128056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 571128052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1dcee771bb792c4ba0b0c88afe7e5ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RelicController
+  relicModal: {fileID: 571128052}
+  relicOptionsRoot: {fileID: 356235593}
+  relicButtonPrefab: {fileID: 34685002601646607, guid: 6743e31d2d04357468a6193827bfa1af, type: 3}
 --- !u!1 &578031463
 GameObject:
   m_ObjectHideFlags: 0
@@ -1329,40 +1285,19 @@ MonoBehaviour:
     baseCost: 1000000
     scorePerSec: 16000
   upgradeSystem: {fileID: 1412321702}
-  upgradeModal: {fileID: 105097432}
-  upgradeTitleText: {fileID: 1390276594}
-  upgradeButtonPrefab: {fileID: 34685002601646607, guid: ea66abb6a8ac3b44fb834b96066088f8, type: 3}
-  upgradeOptionsRoot: {fileID: 1002709781}
   shopSystem: {fileID: 530868845}
-  shopModal: {fileID: 1817278375}
-  shopItemsRoot: {fileID: 2139246758}
-  shopItemButtonPrefab: {fileID: 35558806393060828, guid: 2c104abcda76b114286afba52bee7dc9, type: 3}
-  rerollButton: {fileID: 1830583742}
-  openShopButton: {fileID: 2084398166}
-  closeShopButton: {fileID: 2079897087}
-  deckViewModal: {fileID: 1745528322}
-  deckViewContent: {fileID: 194747187}
-  deckCardItemPrefab: {fileID: 4537354698048255725, guid: b333569580544364f86bd38dcfc7872c, type: 3}
-  openDeckViewButton: {fileID: 1027275145}
-  closeDeckViewButton: {fileID: 727963251}
+  relicSystem: {fileID: 2109147158}
   buildingMilestoneStep: 10
   buildingBonusRate: 2
-  relicSystem: {fileID: 2109147158}
-  relicModal: {fileID: 571128052}
-  relicOptionsRoot: {fileID: 356235593}
-  relicButtonPrefab: {fileID: 34685002601646607, guid: 6743e31d2d04357468a6193827bfa1af, type: 3}
-  timeText: {fileID: 1819243575}
-  scoreText: {fileID: 1851933099}
-  goalText: {fileID: 682257666}
-  diffText: {fileID: 1328529774}
-  handPanel: {fileID: 1934693491}
-  cardViewPrefab: {fileID: 2855586261413236371, guid: d16195f4b5a37e34caffd8e6b0b3f7c5, type: 3}
-  buildPanel: {fileID: 914667675}
-  buildButtonPrefab: {fileID: 6259053160663255684, guid: 767db1c433df66a45b26062dae555109, type: 3}
-  resultModal: {fileID: 1438637674}
-  resultText: {fileID: 1516240130}
-  nextButton: {fileID: 642549411}
-  retryButton: {fileID: 362644931}
+  hudController: {fileID: 788608801}
+  handController: {fileID: 1934693496}
+  buildingPanelController: {fileID: 914667679}
+  shopController: {fileID: 1817278379}
+  upgradeController: {fileID: 105097436}
+  relicController: {fileID: 571128056}
+  deckViewController: {fileID: 1745528326}
+  resultController: {fileID: 1438637678}
+  handKeyInput: {fileID: 1367383740}
 --- !u!4 &578031465
 Transform:
   m_ObjectHideFlags: 0
@@ -1989,6 +1924,7 @@ GameObject:
   - component: {fileID: 788608800}
   - component: {fileID: 788608799}
   - component: {fileID: 788608798}
+  - component: {fileID: 788608801}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2009,7 +1945,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1934693491}
-  - {fileID: 489827348}
+  - {fileID: 2084398163}
+  - {fileID: 914667675}
   - {fileID: 1027275142}
   - {fileID: 1819243573}
   - {fileID: 1851933097}
@@ -2091,6 +2028,22 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &788608801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 788608796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af7c4e9b3713f624f84eb564be09ac5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HUDController
+  timeText: {fileID: 1819243575}
+  scoreText: {fileID: 1851933099}
+  goalText: {fileID: 682257666}
+  diffText: {fileID: 1328529774}
 --- !u!1 &846714330
 GameObject:
   m_ObjectHideFlags: 0
@@ -2369,8 +2322,9 @@ GameObject:
   - component: {fileID: 914667678}
   - component: {fileID: 914667677}
   - component: {fileID: 914667676}
+  - component: {fileID: 914667679}
   m_Layer: 5
-  m_Name: BuildRowRoot
+  m_Name: BuildPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2383,17 +2337,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914667674}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 489827348}
+  m_Father: {fileID: 788608797}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -26.019012}
-  m_SizeDelta: {x: 0, y: -52.038}
+  m_AnchoredPosition: {x: 315.58008, y: -26.019012}
+  m_SizeDelta: {x: -631.16, y: -52.038}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &914667676
 MonoBehaviour:
@@ -2459,6 +2413,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914667674}
   m_CullTransparentMesh: 1
+--- !u!114 &914667679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 914667674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8660ce70f4cdb064d931d5faa958e3b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingPanelController
+  buildPanel: {fileID: 914667675}
+  buildButtonPrefab: {fileID: 6259053160663255684, guid: 767db1c433df66a45b26062dae555109, type: 3}
 --- !u!1 &942895662
 GameObject:
   m_ObjectHideFlags: 0
@@ -3456,6 +3424,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1359554474}
   m_CullTransparentMesh: 1
+--- !u!1 &1367383739
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1367383741}
+  - component: {fileID: 1367383740}
+  m_Layer: 0
+  m_Name: HandKeyInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1367383740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1367383739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d3fa7ab477d1104cbcc88742a9ae2f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandKeyInput
+--- !u!4 &1367383741
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1367383739}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 340.16968, y: 214.52924, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1390276591
 GameObject:
   m_ObjectHideFlags: 0
@@ -3603,6 +3615,7 @@ GameObject:
   - component: {fileID: 1438637675}
   - component: {fileID: 1438637677}
   - component: {fileID: 1438637676}
+  - component: {fileID: 1438637678}
   m_Layer: 5
   m_Name: ResultPanel
   m_TagString: Untagged
@@ -3670,6 +3683,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1438637674}
   m_CullTransparentMesh: 1
+--- !u!114 &1438637678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438637674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58b18fe21510915469e527fc721654a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResultController
+  resultModal: {fileID: 1438637674}
+  resultText: {fileID: 1516240130}
+  nextButton: {fileID: 642549411}
+  retryButton: {fileID: 362644931}
 --- !u!1 &1516240127
 GameObject:
   m_ObjectHideFlags: 0
@@ -4034,6 +4063,7 @@ GameObject:
   - component: {fileID: 1745528323}
   - component: {fileID: 1745528325}
   - component: {fileID: 1745528324}
+  - component: {fileID: 1745528326}
   m_Layer: 5
   m_Name: DeckModal
   m_TagString: Untagged
@@ -4101,6 +4131,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1745528322}
   m_CullTransparentMesh: 1
+--- !u!114 &1745528326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745528322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27403b63cc53c274894d2b0844b4311f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeckViewController
+  deckViewModal: {fileID: 1745528322}
+  deckViewContent: {fileID: 194747187}
+  deckCardItemPrefab: {fileID: 4537354698048255725, guid: b333569580544364f86bd38dcfc7872c, type: 3}
+  openButton: {fileID: 1027275145}
+  closeButton: {fileID: 727963251}
 --- !u!1 &1817278375
 GameObject:
   m_ObjectHideFlags: 0
@@ -4112,6 +4159,7 @@ GameObject:
   - component: {fileID: 1817278376}
   - component: {fileID: 1817278378}
   - component: {fileID: 1817278377}
+  - component: {fileID: 1817278379}
   m_Layer: 5
   m_Name: ShopModal
   m_TagString: Untagged
@@ -4180,6 +4228,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1817278375}
   m_CullTransparentMesh: 1
+--- !u!114 &1817278379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817278375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c2b3c852f47c0a4194d76178dfc64c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopController
+  shopModal: {fileID: 1817278375}
+  shopItemsRoot: {fileID: 2139246758}
+  shopItemButtonPrefab: {fileID: 35558806393060828, guid: 2c104abcda76b114286afba52bee7dc9, type: 3}
+  rerollButton: {fileID: 1830583742}
+  openShopButton: {fileID: 2084398166}
+  closeShopButton: {fileID: 2079897087}
 --- !u!1 &1819243572
 GameObject:
   m_ObjectHideFlags: 0
@@ -4709,6 +4775,7 @@ GameObject:
   - component: {fileID: 1934693492}
   - component: {fileID: 1934693494}
   - component: {fileID: 1934693495}
+  - component: {fileID: 1934693496}
   m_Layer: 5
   m_Name: HandPanel
   m_TagString: Untagged
@@ -4813,6 +4880,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
   m_HorizontalFit: 2
   m_VerticalFit: 0
+--- !u!114 &1934693496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934693490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46c029db997e45648b5516be4358accc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandController
+  handPanel: {fileID: 1934693491}
+  cardViewPrefab: {fileID: 2855586261413236371, guid: d16195f4b5a37e34caffd8e6b0b3f7c5, type: 3}
 --- !u!1 &2079897083
 GameObject:
   m_ObjectHideFlags: 0
@@ -4960,17 +5041,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2084398162}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1916937742}
-  m_Father: {fileID: 489827348}
+  m_Father: {fileID: 788608797}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -4, y: -26}
+  m_AnchoredPosition: {x: 311.58008, y: -26}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2084398164
@@ -5217,4 +5298,5 @@ SceneRoots:
   - {fileID: 578031465}
   - {fileID: 1412321703}
   - {fileID: 2109147159}
+  - {fileID: 1367383741}
   - {fileID: 530868846}
