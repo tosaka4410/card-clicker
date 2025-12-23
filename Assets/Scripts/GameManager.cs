@@ -1,6 +1,7 @@
 // Assets/Scripts/GameManager.cs
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -40,6 +41,12 @@ public class GameManager : MonoBehaviour
     public GameObject deckCardItemPrefab;
     public Button openDeckViewButton;
     public Button closeDeckViewButton;
+
+    [Header("Building Milestone")]
+    public int buildingMilestoneStep = 10; // 10個ごと
+    public float buildingBonusRate = 1.15f; // 施設強化倍率（15%）
+
+    private Dictionary<string, int> nextBuildingMilestone = new();
 
     [Header("UI")]
     public Text timeText;
@@ -111,6 +118,7 @@ public class GameManager : MonoBehaviour
             timeLeft = 0f;
             EndStage(score >= goal);
         }
+        HandleCardKeyInput();
     }
 
     void StartStage()
@@ -128,6 +136,7 @@ public class GameManager : MonoBehaviour
         DrawCards(startingHand);
 
         SetupBuildButtons();
+        InitBuildingMilestones();
         UpdateUI();
     }
 
@@ -143,8 +152,11 @@ public class GameManager : MonoBehaviour
             {
                 if (ended)
                     return;
-                buildings.TryBuild(def, TryPayScore);
-                UpdateBuildButtonLabels();
+                if (buildings.TryBuild(def, TryPayScore))
+                {
+                    UpdateBuildButtonLabels();
+                    CheckBuildingMilestone(def);
+                }
             });
         }
         UpdateBuildButtonLabels();
@@ -476,5 +488,81 @@ public class GameManager : MonoBehaviour
 
         deckViewModal.SetActive(false);
         Time.timeScale = 1f;
+    }
+
+    void CheckBuildingMilestone(BuildingDef def)
+    {
+        int built = buildings.GetBuiltCount(def.id);
+        int next = nextBuildingMilestone[def.id];
+
+        if (built < next)
+            return;
+
+        // 次のマイルストーンへ
+        nextBuildingMilestone[def.id] += buildingMilestoneStep;
+
+        OnBuildingMilestoneReached(def, built);
+    }
+
+    void OnBuildingMilestoneReached(BuildingDef def, int builtCount)
+    {
+        Debug.Log($"[Milestone] {def.id} built {builtCount}");
+
+        // ① この施設だけ強化
+        def.scorePerSec *= buildingBonusRate;
+
+        // ② 時間停止
+        Time.timeScale = 0f;
+
+        // ③ アップグレード3択を表示
+        ShowUpgradeChoices();
+    }
+
+    void InitBuildingMilestones()
+    {
+        nextBuildingMilestone.Clear();
+        foreach (var def in buildingDefs)
+        {
+            nextBuildingMilestone[def.id] = buildingMilestoneStep;
+        }
+    }
+
+    bool CanPlayCardByKey()
+    {
+        if (ended)
+            return false;
+        if (shopModal != null && shopModal.activeInHierarchy)
+            return false;
+        if (deckViewModal != null && deckViewModal.activeInHierarchy)
+            return false;
+        if (upgradeModal != null && upgradeModal.activeInHierarchy)
+            return false;
+        if (Time.timeScale == 0f)
+            return false;
+
+        return true;
+    }
+
+    void HandleCardKeyInput()
+    {
+        if (!CanPlayCardByKey())
+            return;
+
+        if (Keyboard.current == null)
+            return;
+
+        int max = Mathf.Min(hand.Count, 9);
+
+        for (int i = 0; i < max; i++)
+        {
+            var key = Key.Digit1 + i; // 1〜9
+            if (Keyboard.current[key].wasPressedThisFrame)
+            {
+                var card = hand[i];
+                Debug.Log($"[Input] Play card by key: {i + 1} -> {card.cardName}");
+                PlayCard(card);
+                return;
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ public class BuildingDef
 public class BuildingSystem
 {
     public float rate = 0.6f;
+    public int totalBuiltCount { get; private set; } = 0;
 
     // 同種建設数（ステージ跨ぎで保持する前提）
     private readonly Dictionary<string, int> builtCount = new();
@@ -33,6 +34,7 @@ public class BuildingSystem
 
         builtCount[def.id] = GetBuiltCount(def.id) + 1;
         activeCount[def.id] = GetActiveCount(def.id) + 1;
+        totalBuiltCount++;
         return true;
     }
 
