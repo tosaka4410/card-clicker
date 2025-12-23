@@ -158,7 +158,7 @@ public class GameManager : MonoBehaviour
             {
                 if (ended)
                     return;
-                if (buildings.TryBuild(def, TryPayScore))
+                if (buildings.TryBuild(def, relicSystem.buildingCostMultiplier, TryPayScore))
                 {
                     UpdateBuildButtonLabels();
                     CheckBuildingMilestone(def);

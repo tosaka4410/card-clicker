@@ -30,9 +30,9 @@ public class BuildingSystem
         return Mathf.CeilToInt(raw * costMultiplier);
     }
 
-    public bool TryBuild(BuildingDef def, System.Func<int, bool> tryPay)
+    public bool TryBuild(BuildingDef def, float costMultiplier, System.Func<int, bool> tryPay)
     {
-        int cost = GetCost(def);
+        int cost = GetCost(def, costMultiplier);
         if (!tryPay(cost))
             return false;
 
