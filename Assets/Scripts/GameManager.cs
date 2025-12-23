@@ -48,6 +48,12 @@ public class GameManager : MonoBehaviour
 
     private Dictionary<string, int> nextBuildingMilestone = new();
 
+    [Header("Relic")]
+    public RelicSystem relicSystem;
+    public GameObject relicModal;
+    public Transform relicOptionsRoot;
+    public Button relicButtonPrefab;
+
     [Header("UI")]
     public Text timeText;
     public Text scoreText;
@@ -105,9 +111,9 @@ public class GameManager : MonoBehaviour
         }
 
         // 時間ドロー
-        while (drawTimer >= drawInterval)
+        while (drawTimer >= drawInterval * relicSystem.drawIntervalMultiplier)
         {
-            drawTimer -= drawInterval;
+            drawTimer -= drawInterval * relicSystem.drawIntervalMultiplier;
             DrawCards(1);
         }
 
@@ -168,7 +174,7 @@ public class GameManager : MonoBehaviour
         {
             var def = buildingDefs[i];
             var btn = buildPanel.GetChild(i).GetComponent<Button>();
-            int cost = buildings.GetCost(def);
+            int cost = buildings.GetCost(def, relicSystem.buildingCostMultiplier);
             int n = buildings.GetActiveCount(def.id);
             btn.GetComponentInChildren<Text>().text =
                 $"{def.id}  Cost:{cost}  +{def.scorePerSec}/s  x{n}";
@@ -209,7 +215,8 @@ public class GameManager : MonoBehaviour
 
     public void AddScore(int amount)
     {
-        score += Mathf.Max(0, amount);
+        int v = Mathf.RoundToInt(amount * relicSystem.scoreMultiplier);
+        score += Mathf.Max(0, v);
     }
 
     public bool TryPayScore(int amount)
@@ -301,7 +308,7 @@ public class GameManager : MonoBehaviour
             nextButton.onClick.AddListener(() =>
             {
                 resultModal.SetActive(false);
-                ShowUpgradeChoices();
+                ShowRelicChoices();
             });
         }
 
@@ -563,6 +570,37 @@ public class GameManager : MonoBehaviour
                 PlayCard(card);
                 return;
             }
+        }
+    }
+
+    void ShowRelicChoices()
+    {
+        relicModal.SetActive(true);
+        relicModal.transform.SetAsLastSibling();
+
+        foreach (Transform c in relicOptionsRoot)
+            Destroy(c.gameObject);
+
+        var relics = relicSystem.RollRelics(3);
+
+        foreach (var relic in relics)
+        {
+            var btn = Instantiate(relicButtonPrefab, relicOptionsRoot);
+            var texts = btn.GetComponentsInChildren<Text>();
+
+            texts[0].text = relic.relicName;
+            texts[1].text = relic.description;
+
+            btn.onClick.AddListener(() =>
+            {
+                relicSystem.AddRelic(relic);
+                relicModal.SetActive(false);
+
+                // 次ステージへ
+                goal = Mathf.RoundToInt(goal * 1.35f + 200);
+                stageTime = Mathf.Max(60f, stageTime - 5f);
+                StartStage();
+            });
         }
     }
 }

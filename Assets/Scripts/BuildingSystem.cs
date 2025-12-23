@@ -1,5 +1,6 @@
 // Assets/Scripts/BuildingSystem.cs
 using System.Collections.Generic;
+using UnityEngine;
 
 [System.Serializable]
 public class BuildingDef
@@ -19,18 +20,21 @@ public class BuildingSystem
     private readonly Dictionary<string, int> activeCount = new(); // 今ランで稼働している数
 
     public int GetBuiltCount(string id) => builtCount.TryGetValue(id, out var c) ? c : 0;
+
     public int GetActiveCount(string id) => activeCount.TryGetValue(id, out var c) ? c : 0;
 
-    public int GetCost(BuildingDef def)
+    public int GetCost(BuildingDef def, float costMultiplier = 1f)
     {
         int n = GetBuiltCount(def.id);
-        return (int)System.MathF.Ceiling(def.baseCost * (1f + n * rate));
+        float raw = def.baseCost * (1f + n * rate);
+        return Mathf.CeilToInt(raw * costMultiplier);
     }
 
     public bool TryBuild(BuildingDef def, System.Func<int, bool> tryPay)
     {
         int cost = GetCost(def);
-        if (!tryPay(cost)) return false;
+        if (!tryPay(cost))
+            return false;
 
         builtCount[def.id] = GetBuiltCount(def.id) + 1;
         activeCount[def.id] = GetActiveCount(def.id) + 1;
