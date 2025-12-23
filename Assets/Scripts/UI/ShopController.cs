@@ -88,18 +88,18 @@ public class ShopController : MonoBehaviour
 
             view.Bind(
                 item.card,
-                () =>
+                CardDisplayMode.Shop,
+                onClick: _ =>
                 {
                     if (!tryPay(item.cost))
                         return;
-
                     onBuy?.Invoke(item.card);
-                    view.button.interactable = false;
-                    view.bodyText.text += "\n<SOLD>";
-                }
+                    view.SetSold(true);
+                },
+                cost: item.cost,
+                sold: false,
+                tag: null
             );
-
-            view.bodyText.text += $"\nCost: {item.cost}";
         }
 
         rerollButton.onClick.RemoveAllListeners();

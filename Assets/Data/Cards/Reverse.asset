@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 96b177b286a844b49b50f5f3545ecb33, type: 3}
-  m_Name: Draw
+  m_Name: Reverse
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardName: "\u3069\u3046\u305E\uFF01"
+  cardName: "\u30EA\u30D0\u30FC\u30B9"
   description: 
   effects:
-  - {fileID: 11400000, guid: bad061489c3a15d468cf7462fe5e0597, type: 2}
-  art: {fileID: -4974441828781582245, guid: edd470b0c2b3b944980152450cc3aea0, type: 3}
+  - {fileID: 11400000, guid: 3ee1a3d93bcad794384fdba5e1bf4780, type: 2}
+  art: {fileID: 4616973353895356255, guid: 23694d1da4950b04b933fc8c55b0d7ff, type: 3}

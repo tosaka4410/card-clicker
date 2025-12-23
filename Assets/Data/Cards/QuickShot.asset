@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96b177b286a844b49b50f5f3545ecb33, type: 3}
   m_Name: QuickShot
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardName: Strike+
+  cardName: "\u304A\u304B\u308F\u308A\uFF01"
   description: 
   effects:
   - {fileID: 11400000, guid: c22f759ebfa8ad5458b860dd5dcd89ba, type: 2}
   - {fileID: 11400000, guid: 1617965b9d9412349901ea1ce83bc86c, type: 2}
+  art: {fileID: 3432353941474130832, guid: ef44600e31b3c304a82cedca5be8ad89, type: 3}

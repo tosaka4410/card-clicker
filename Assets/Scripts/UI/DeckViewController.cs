@@ -53,9 +53,9 @@ public class DeckViewController : MonoBehaviour
         foreach (var card in deck)
         {
             var go = Instantiate(deckCardItemPrefab, deckViewContent);
-            var view = go.GetComponent<DeckCardItemView>();
+            var view = go.GetComponent<CardView>();
             if (view == null) continue;
-            view.Bind(card);
+            view.Bind(card, CardDisplayMode.Deck);
         }
     }
 }

@@ -6,6 +6,11 @@ using UnityEngine;
 public class CardData : ScriptableObject
 {
     public string cardName = "Strike";
-    [TextArea] public string description;
+
+    [TextArea]
+    public string description;
     public List<CardEffect> effects = new List<CardEffect>();
+
+    [Header("Visual")]
+    public Sprite art;
 }

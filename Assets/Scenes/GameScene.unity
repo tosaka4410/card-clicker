@@ -1112,6 +1112,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cbd5d384193c59d45a510af38417aabd, type: 2}
   - {fileID: 11400000, guid: 836e18252feba1f41b1c6d18abc46eed, type: 2}
   - {fileID: 11400000, guid: 599d0149cd80d1e4397e9c6459dbb6fe, type: 2}
+  - {fileID: 11400000, guid: 911750bd81ffb204190ac559f8dc11c1, type: 2}
+  - {fileID: 11400000, guid: ab5cd07a0e89a004db9938bd5f47207d, type: 2}
   itemCount: 3
   rerollCost: 50
   baseCardCost: 100
@@ -4145,7 +4147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeckViewController
   deckViewModal: {fileID: 1745528322}
   deckViewContent: {fileID: 194747187}
-  deckCardItemPrefab: {fileID: 4537354698048255725, guid: b333569580544364f86bd38dcfc7872c, type: 3}
+  deckCardItemPrefab: {fileID: 4537354698048255725, guid: d16195f4b5a37e34caffd8e6b0b3f7c5, type: 3}
   openButton: {fileID: 1027275145}
   closeButton: {fileID: 727963251}
 --- !u!1 &1817278375
@@ -4242,7 +4244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopController
   shopModal: {fileID: 1817278375}
   shopItemsRoot: {fileID: 2139246758}
-  shopItemButtonPrefab: {fileID: 35558806393060828, guid: 2c104abcda76b114286afba52bee7dc9, type: 3}
+  shopItemButtonPrefab: {fileID: 4784671297119970131, guid: d16195f4b5a37e34caffd8e6b0b3f7c5, type: 3}
   rerollButton: {fileID: 1830583742}
   openShopButton: {fileID: 2084398166}
   closeShopButton: {fileID: 2079897087}

@@ -15,7 +15,7 @@ public class HandController : MonoBehaviour
         foreach (var card in hand)
         {
             var v = Instantiate(cardViewPrefab, handPanel);
-            v.Bind(card, () => onPlay?.Invoke(card));
+            v.Bind(card, CardDisplayMode.Hand, onPlay);
         }
     }
 }

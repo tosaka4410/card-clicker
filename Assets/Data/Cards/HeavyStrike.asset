@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 96b177b286a844b49b50f5f3545ecb33, type: 3}
-  m_Name: Draw
+  m_Name: HeavyStrike
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardName: "\u3069\u3046\u305E\uFF01"
+  cardName: "\u30A4\u30C3\u30AD\u306E\u307F\uFF01"
   description: 
   effects:
-  - {fileID: 11400000, guid: bad061489c3a15d468cf7462fe5e0597, type: 2}
-  art: {fileID: -4974441828781582245, guid: edd470b0c2b3b944980152450cc3aea0, type: 3}
+  - {fileID: 11400000, guid: 56a10d8fd74ecae4aab0af00a0a23eb7, type: 2}
+  - {fileID: 11400000, guid: c59976ffb7dc46948ac64d4c32e8a2c4, type: 2}
+  art: {fileID: -5311260494041086120, guid: 44aa10504e7d3c14a87aaf544b75c436, type: 3}

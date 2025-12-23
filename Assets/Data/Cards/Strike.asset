@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96b177b286a844b49b50f5f3545ecb33, type: 3}
   m_Name: Strike
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardName: Strike
+  cardName: "\u3068\u308A\u3042\u3048\u305A\u751F"
   description: 
   effects:
   - {fileID: 11400000, guid: c961301e19432b24da6a5eacb5ae3bb1, type: 2}
+  art: {fileID: -2001070164835496868, guid: 9c08ed5e51e916b49bb39407f09ba30f, type: 3}
