@@ -41,6 +41,9 @@ public class CardView : MonoBehaviour
 
     private CardData boundCard;
 
+    [SerializeField]
+    private HoverScaleAnimator hoverAnimator;
+
     public void Bind(
         CardData card,
         CardDisplayMode mode,
@@ -90,6 +93,12 @@ public class CardView : MonoBehaviour
         // Hand/Shop
         button.interactable = !sold;
         button.onClick.AddListener(() => onClick?.Invoke(boundCard));
+
+        // Hover Animation
+        if (hoverAnimator != null)
+        {
+            hoverAnimator.SetEnabled(mode == CardDisplayMode.Hand || mode == CardDisplayMode.Shop);
+        }
     }
 
     public void SetSold(bool sold)
