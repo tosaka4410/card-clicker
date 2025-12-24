@@ -13,8 +13,6 @@ public class ShopController : MonoBehaviour
     [SerializeField]
     private Button shopItemButtonPrefab;
 
-    [SerializeField]
-    private Button rerollButton;
 
     [SerializeField]
     private Button openShopButton;
@@ -53,7 +51,6 @@ public class ShopController : MonoBehaviour
 
     public void Open()
     {
-        modal?.Lock();
         shopModal.SetActive(true);
         Refresh(false);
     }
@@ -61,7 +58,6 @@ public class ShopController : MonoBehaviour
     public void Close()
     {
         shopModal.SetActive(false);
-        modal?.Unlock();
     }
 
     private void Refresh(bool isReroll)
@@ -102,9 +98,5 @@ public class ShopController : MonoBehaviour
             );
         }
 
-        rerollButton.onClick.RemoveAllListeners();
-        rerollButton.GetComponentInChildren<Text>().text = $"Reroll ({shopSystem.rerollCost})";
-        rerollButton.interactable = getScore() >= shopSystem.rerollCost;
-        rerollButton.onClick.AddListener(() => Refresh(true));
     }
 }

@@ -85,7 +85,8 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (ended) return;
+        if (ended)
+            return;
 
         // timers
         timeLeft -= Time.deltaTime;
@@ -143,14 +144,19 @@ public class GameManager : MonoBehaviour
 
         InitBuildingMilestones();
 
-        buildingPanelController.BuildButtons(buildingDefs, def =>
-        {
-            if (ended) return false;
+        buildingPanelController.BuildButtons(
+            buildingDefs,
+            def =>
+            {
+                if (ended)
+                    return false;
 
-            bool ok = buildings.TryBuild(def, relicSystem.BuildingCostMultiplier, TryPayScore);
-            if (ok) CheckBuildingMilestone(def);
-            return ok;
-        });
+                bool ok = buildings.TryBuild(def, relicSystem.BuildingCostMultiplier, TryPayScore);
+                if (ok)
+                    CheckBuildingMilestone(def);
+                return ok;
+            }
+        );
 
         // render once
         hudController.Render(timeLeft, score, goal);
@@ -166,8 +172,10 @@ public class GameManager : MonoBehaviour
 
     bool CanPlayCardByKey()
     {
-        if (ended) return false;
-        if (modalGuard.IsLocked) return false; // ここが肝
+        if (ended)
+            return false;
+        if (modalGuard.IsLocked)
+            return false; // ここが肝
         return true;
     }
 
@@ -181,7 +189,8 @@ public class GameManager : MonoBehaviour
 
     public bool TryPayScore(int amount)
     {
-        if (score < amount) return false;
+        if (score < amount)
+            return false;
         score -= amount;
         return true;
     }
@@ -192,9 +201,11 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < amount; i++)
         {
-            if (hand.Count >= handLimit) break;
+            if (hand.Count >= handLimit)
+                break;
             var c = deck.DrawOne();
-            if (c == null) break;
+            if (c == null)
+                break;
             hand.Add(c);
             changed = true;
         }
@@ -205,7 +216,8 @@ public class GameManager : MonoBehaviour
 
     public void AddTime(float seconds)
     {
-        if (ended) return;
+        if (ended)
+            return;
         timeLeft += seconds;
     }
 
@@ -220,14 +232,16 @@ public class GameManager : MonoBehaviour
 
     void PlayCard(CardData card)
     {
-        if (ended) return;
+        if (ended)
+            return;
 
         ctx.Multiplier = 1;
         ctx.ExhaustThisCard = false;
 
         foreach (var e in card.effects)
         {
-            if (e == null) continue;
+            if (e == null)
+                continue;
             e.Apply(ctx);
         }
 
@@ -256,14 +270,17 @@ public class GameManager : MonoBehaviour
     {
         var relics = relicSystem.RollRelics(3);
 
-        relicController.Show(relics, relic =>
-        {
-            relicSystem.AddRelic(relic);
+        relicController.Show(
+            relics,
+            relic =>
+            {
+                relicSystem.AddRelic(relic);
 
-            goal = Mathf.RoundToInt(goal * 1.35f + 200);
-            stageTime = Mathf.Max(60f, stageTime - 5f);
-            StartStage();
-        });
+                goal = Mathf.RoundToInt(goal * 1.35f + 200);
+                stageTime = Mathf.Max(60f, stageTime - 5f);
+                StartStage();
+            }
+        );
     }
 
     // ---- building milestone -> upgrade ----
@@ -271,15 +288,26 @@ public class GameManager : MonoBehaviour
     void InitBuildingMilestones()
     {
         nextBuildingMilestone.Clear();
+
         foreach (var def in buildingDefs)
-            nextBuildingMilestone[def.id] = buildingMilestoneStep;
+        {
+            int built = buildings.GetBuiltCount(def.id);
+
+            // built=0..9 -> next=10
+            // built=10..19 -> next=20
+            // built=20..29 -> next=30
+            int next = ((built / buildingMilestoneStep) + 1) * buildingMilestoneStep;
+
+            nextBuildingMilestone[def.id] = next;
+        }
     }
 
     void CheckBuildingMilestone(BuildingDef def)
     {
         int built = buildings.GetBuiltCount(def.id);
         int next = nextBuildingMilestone[def.id];
-        if (built < next) return;
+        if (built < next)
+            return;
 
         nextBuildingMilestone[def.id] += buildingMilestoneStep;
         OnBuildingMilestoneReached(def, built);
@@ -296,28 +324,51 @@ public class GameManager : MonoBehaviour
 
         foreach (var up in upgrades)
         {
-            if (startingDeck.Count == 0) continue;
+            if (startingDeck.Count == 0)
+                continue;
             var target = startingDeck[Random.Range(0, startingDeck.Count)];
             choices.Add(new UpgradeChoice { upgrade = up, targetCard = target });
         }
 
-        upgradeController.Show(choices, choice =>
-        {
-            ApplyUpgrade(choice);
+        upgradeController.Show(
+            choices,
+            choice =>
+            {
+                ApplyUpgrade(choice);
 
-            goal = Mathf.RoundToInt(goal * 1.35f + 200);
-            stageTime = Mathf.Max(60f, stageTime - 5f);
-            StartStage();
-        });
+                ResumeAfterUpgrade();
+            }
+        );
     }
 
     void ApplyUpgrade(UpgradeChoice choice)
     {
         var target = choice.targetCard;
         int idx = startingDeck.IndexOf(target);
-        if (idx < 0) return;
+        if (idx < 0)
+            return;
 
         var upgraded = upgradeSystem.CloneAndAddEffect(target, choice.upgrade.addEffect, "+");
         startingDeck[idx] = upgraded;
+    }
+
+    void ResumeAfterUpgrade()
+    {
+        // ModalGuard / UpgradeController が Unlock している前提ならここは不要
+        // 念のため入れるなら：
+        // modalGuard.ForceReset();
+
+        // 手札やHUDの再描画（必要なら）
+        hudController.Render(timeLeft, score, goal);
+        handController.Render(hand, PlayCard);
+
+        // 建物ボタンの表示も更新
+        buildingPanelController.UpdateLabels(
+            buildingDefs,
+            def => buildings.GetCost(def, relicSystem.BuildingCostMultiplier),
+            def => buildings.GetActiveCount(def.id),
+            () => score,
+            () => ended
+        );
     }
 }
