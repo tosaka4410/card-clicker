@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviour
     public DeckViewController deckViewController;
     public ResultController resultController;
     public HandKeyInput handKeyInput;
+    public PortraitController portraitController;
+
 
     // state
     private float timeLeft;
@@ -234,6 +236,9 @@ public class GameManager : MonoBehaviour
     {
         if (ended)
             return;
+        
+        var actor = (card.kind == CardKind.Cow) ? Actor.CowGirl : Actor.DogGirl;
+        portraitController.React(card, actor);
 
         ctx.Multiplier = 1;
         ctx.ExhaustThisCard = false;
