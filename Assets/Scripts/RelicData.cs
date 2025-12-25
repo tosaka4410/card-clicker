@@ -18,4 +18,6 @@ public class RelicData : ScriptableObject
 
     // 数値（用途に応じて解釈）
     public float value;
+    [Header("Visual")]
+    public Sprite icon; 
 }

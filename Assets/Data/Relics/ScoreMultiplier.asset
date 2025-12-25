@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a650283a12381374b8db9cad91cfe8bc, type: 3}
   m_Name: ScoreMultiplier
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
-  relicName: ScoreMultiplier
-  description: "Score \xD71.15"
+  relicName: "\u6247\u5B50"
+  description: "\u30AB\u30FC\u30C9\u3067\u5F97\u3089\u308C\u308B\u30B9\u30B3\u30A2\u304C\uFF11\uFF15\uFF05\u4E0A\u6607"
   type: 1
   value: 1.15
+  icon: {fileID: 1710981365271166214, guid: b553ab822e77ab541a12cb1778757ab7, type: 3}

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a650283a12381374b8db9cad91cfe8bc, type: 3}
   m_Name: BuildingCostDown
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
-  relicName: BuildingCostDown
-  description: "BuildingCost \xD70.8"
+  relicName: "\u30D5\u30E9\u30A4\u30D1\u30F3"
+  description: "\u5EFA\u8A2D\u30B3\u30B9\u30C8\u304C\uFF12\uFF10\uFF05\u5B89\u304F\u306A\u308B"
   type: 2
   value: 0.8
+  icon: {fileID: 8041774921739049974, guid: 260e1f301aa76d242b06fa137bd75c3e, type: 3}

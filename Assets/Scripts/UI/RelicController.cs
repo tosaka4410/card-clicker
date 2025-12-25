@@ -5,9 +5,14 @@ using UnityEngine.UI;
 
 public class RelicController : MonoBehaviour
 {
-    [SerializeField] private GameObject relicModal;
-    [SerializeField] private Transform relicOptionsRoot;
-    [SerializeField] private Button relicButtonPrefab;
+    [SerializeField]
+    private GameObject relicModal;
+
+    [SerializeField]
+    private Transform relicOptionsRoot;
+
+    [SerializeField]
+    private Button relicButtonPrefab;
 
     private ModalGuard modal;
     public bool IsOpen => relicModal != null && relicModal.activeInHierarchy;
@@ -28,9 +33,20 @@ public class RelicController : MonoBehaviour
         {
             var btn = Instantiate(relicButtonPrefab, relicOptionsRoot);
             var texts = btn.GetComponentsInChildren<Text>();
+            var images = btn.GetComponentsInChildren<Image>();
 
             texts[0].text = relic.relicName;
             texts[1].text = relic.description;
+
+            foreach (var img in images)
+            {
+                if (img.gameObject != btn.gameObject)
+                {
+                    img.sprite = relic.icon;
+                    img.enabled = relic.icon != null;
+                    break;
+                }
+            }
 
             btn.onClick.AddListener(() =>
             {
