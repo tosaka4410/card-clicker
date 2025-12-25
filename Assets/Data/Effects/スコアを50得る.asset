@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: AddScore30
+  m_Script: {fileID: 11500000, guid: 59e51ada0ba33344c8f77fa2389562df, type: 3}
+  m_Name: "\u30B9\u30B3\u30A2\u309250\u5F97\u308B"
   m_EditorClassIdentifier: Assembly-CSharp::AddScoreEffect
-  amount: 30
+  amount: 50

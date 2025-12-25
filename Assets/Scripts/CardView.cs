@@ -117,12 +117,11 @@ public class CardView : MonoBehaviour
             return "";
 
         var sb = new StringBuilder();
-        if (!string.IsNullOrEmpty(card.description))
-            sb.AppendLine(card.description);
+        // if (!string.IsNullOrEmpty(card.description))
+        //     sb.AppendLine(card.description);
 
         if (card.effects != null && card.effects.Count > 0)
         {
-            sb.AppendLine("Effects:");
             foreach (var e in card.effects)
                 if (e != null)
                     sb.AppendLine($"- {e.name}");
