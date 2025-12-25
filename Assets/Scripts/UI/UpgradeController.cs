@@ -7,7 +7,10 @@ public class UpgradeController : MonoBehaviour
 {
     [SerializeField] private GameObject upgradeModal;
     [SerializeField] private Text upgradeTitleText;
-    [SerializeField] private Button upgradeButtonPrefab;
+
+    // ★差し替え
+    [SerializeField] private UpgradeOptionView optionPrefab;
+
     [SerializeField] private Transform upgradeOptionsRoot;
 
     private ModalGuard modal;
@@ -22,21 +25,15 @@ public class UpgradeController : MonoBehaviour
 
         upgradeModal.SetActive(true);
         upgradeModal.transform.SetAsLastSibling();
-        upgradeTitleText.text = "Choose one upgrade";
+        upgradeTitleText.text = "アップグレードを選択！";
 
         for (int i = upgradeOptionsRoot.childCount - 1; i >= 0; i--)
             Destroy(upgradeOptionsRoot.GetChild(i).gameObject);
 
         foreach (var choice in choices)
         {
-            var btn = Instantiate(upgradeButtonPrefab, upgradeOptionsRoot);
-            var view = btn.GetComponent<UpgradeButtonView>();
-
-            string title = choice.upgrade.title;
-            string desc = $"{choice.upgrade.description}\n\nTarget: {choice.targetCard.cardName}";
-            view.Bind(title, desc);
-
-            btn.onClick.AddListener(() =>
+            var view = Instantiate(optionPrefab, upgradeOptionsRoot);
+            view.Bind(choice, () =>
             {
                 upgradeModal.SetActive(false);
                 modal?.Unlock();

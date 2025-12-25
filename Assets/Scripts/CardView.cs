@@ -8,6 +8,7 @@ public enum CardDisplayMode
     Hand, // クリックでPlay
     Shop, // Cost表示、クリックでBuy
     Deck, // 表示のみ
+    Upgrade
 }
 
 public class CardView : MonoBehaviour
@@ -49,6 +50,7 @@ public class CardView : MonoBehaviour
         CardDisplayMode mode,
         Action<CardData> onClick = null,
         int? cost = null,
+        string? upgradeTag = null,
         bool sold = false,
         string tag = null
     )
@@ -59,14 +61,21 @@ public class CardView : MonoBehaviour
         bodyText.text = BuildBody(card);
 
         // Footer
-        bool showFooter = (mode == CardDisplayMode.Shop);
+        bool showFooter = (mode == CardDisplayMode.Shop || mode == CardDisplayMode.Upgrade);
         if (footerRoot != null)
             footerRoot.SetActive(showFooter);
 
-        if (showFooter)
+        if (mode == CardDisplayMode.Shop)
         {
             if (costText != null)
                 costText.text = cost.HasValue ? $"Cost: {cost.Value}" : "";
+            if (tagText != null)
+                tagText.text = string.IsNullOrEmpty(tag) ? "" : tag;
+        }
+        else if (mode == CardDisplayMode.Upgrade)
+        {
+            if (costText != null)
+                costText.text = upgradeTag ?? "";
             if (tagText != null)
                 tagText.text = string.IsNullOrEmpty(tag) ? "" : tag;
         }
