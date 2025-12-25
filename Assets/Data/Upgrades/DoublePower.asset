@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 952048219fede084eafc8b19ee3467b9, type: 3}
   m_Name: DoublePower
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
-  title: DoublePower
+  title: "\u52B9\u679C\u304C\u500D\u306B\u306A\u308B\u304C\u4F7F\u7528\u5F8C\u6D88\u6EC5\u3059\u308B"
   description: Double effects. Card is exhausted.
   addEffect: {fileID: 11400000, guid: c59976ffb7dc46948ac64d4c32e8a2c4, type: 2}

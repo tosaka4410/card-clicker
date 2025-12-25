@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 952048219fede084eafc8b19ee3467b9, type: 3}
   m_Name: AddScore
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
-  title: AddScore
+  title: "\u30B9\u30B3\u30A2\u309280\u5F97\u308B"
   description: Add +80 score.
   addEffect: {fileID: 11400000, guid: 56a10d8fd74ecae4aab0af00a0a23eb7, type: 2}

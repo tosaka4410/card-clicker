@@ -366,8 +366,18 @@ public class GameManager : MonoBehaviour
         if (idx < 0)
             return;
 
-        var upgraded = upgradeSystem.CloneAndAddEffect(target, choice.upgrade.addEffect, "+");
+        var add = choice.upgrade.addEffect;
+        Debug.Log($"[Upgrade] addEffect={(add == null ? "NULL" : add.name)}");
+
+        var upgraded = upgradeSystem.CloneAndAddEffect(target, add, "+");
         startingDeck[idx] = upgraded;
+
+        // 中身を確認
+        for (int i = 0; i < upgraded.effects.Count; i++)
+        {
+            var e = upgraded.effects[i];
+            Debug.Log($"[Upgrade] upgraded.effects[{i}]={(e == null ? "NULL" : e.name)}");
+        }
     }
 
     void ResumeAfterUpgrade()

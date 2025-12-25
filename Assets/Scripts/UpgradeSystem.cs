@@ -10,7 +10,7 @@ public class UpgradeSystem : MonoBehaviour
     public CardData CloneAndAddEffect(CardData original, CardEffect addEffect, string suffix)
     {
         var clone = ScriptableObject.Instantiate(original);
-        clone.cardName = $"{original.cardName} {suffix}";
+        clone.cardName = $"{original.cardName}{suffix}";
         clone.effects = new List<CardEffect>(original.effects) { addEffect };
         return clone;
     }

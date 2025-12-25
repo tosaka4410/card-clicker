@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 952048219fede084eafc8b19ee3467b9, type: 3}
   m_Name: AllInTime
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
-  title: AllInTime
+  title: "\u30B9\u30B3\u30A2\u3092\u5931\u3046\u304C\u6642\u9593\u304C\uFF13\u79D2\u4F38\u3073\u308B"
   description: Lose all score. Gain +3 seconds
   addEffect: {fileID: 11400000, guid: 3ee1a3d93bcad794384fdba5e1bf4780, type: 2}

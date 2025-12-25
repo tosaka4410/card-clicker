@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 952048219fede084eafc8b19ee3467b9, type: 3}
   m_Name: ExtraDraw
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
-  title: ExtraDraw
+  title: "\u30AB\u30FC\u30C9\u3092\uFF11\u679A\u5F15\u304F"
   description: Draw +1 card.
   addEffect: {fileID: 11400000, guid: 1617965b9d9412349901ea1ce83bc86c, type: 2}
