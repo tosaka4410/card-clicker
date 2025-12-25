@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     public SettingsUI settingsUI;
     public HandKeyInput handKeyInput;
     public PortraitController portraitController;
+    public RelicHUDController relicHUDController;
 
     // state
     private float timeLeft;
@@ -64,7 +65,6 @@ public class GameManager : MonoBehaviour
         upgradeController.Init(modalGuard);
         relicController.Init(modalGuard);
         resultController.Init(modalGuard);
-
 
         shopController.Init(
             shopSystem,
@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
         }
 
         // HUD + build labels only（手札は変更時にのみ）
-        hudController.Render(timeLeft, score, goal);
+        hudController.Render(timeLeft, score, goal, relicSystem.GetAllOwnedCounts());
         buildingPanelController.UpdateLabels(
             buildingDefs,
             def => buildings.GetCost(def, relicSystem.BuildingCostMultiplier),
@@ -136,6 +136,7 @@ public class GameManager : MonoBehaviour
         modalGuard.ForceReset();
 
         AudioManager.Instance?.PlayBGM(BGMType.Stage);
+        RefreshRelicHUD();
 
         ended = false;
 
@@ -168,7 +169,7 @@ public class GameManager : MonoBehaviour
         );
 
         // render once
-        hudController.Render(timeLeft, score, goal);
+        hudController.Render(timeLeft, score, goal, relicSystem.GetAllOwnedCounts());
         handController.Render(hand, PlayCard);
         buildingPanelController.UpdateLabels(
             buildingDefs,
@@ -291,6 +292,7 @@ public class GameManager : MonoBehaviour
             relic =>
             {
                 relicSystem.AddRelic(relic);
+                RefreshRelicHUD();
 
                 goal = Mathf.RoundToInt(goal * 1.35f + 200);
                 stageTime = Mathf.Max(60f, stageTime - 5f);
@@ -375,7 +377,7 @@ public class GameManager : MonoBehaviour
         // modalGuard.ForceReset();
 
         // 手札やHUDの再描画（必要なら）
-        hudController.Render(timeLeft, score, goal);
+        hudController.Render(timeLeft, score, goal, relicSystem.GetAllOwnedCounts());
         handController.Render(hand, PlayCard);
 
         // 建物ボタンの表示も更新
@@ -386,5 +388,12 @@ public class GameManager : MonoBehaviour
             () => score,
             () => ended
         );
+    }
+
+    void RefreshRelicHUD()
+    {
+        if (relicHUDController == null || relicSystem == null)
+            return;
+        relicHUDController.Refresh(relicSystem.GetAllOwnedCounts());
     }
 }

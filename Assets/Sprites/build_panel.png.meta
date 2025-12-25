@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5c8cf371f907c9c4980a0a568bdc0dd0
+guid: 1bce2586c919544429eda3e959b2564a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5927549708338703847
-    second: mokume_natural01_0
+      213: 348738644516850638
+    second: name_plate_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: mokume_natural01_0
+      name: name_plate_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1344
-        height: 896
+        x: 4
+        y: 15
+        width: 1195
+        height: 554
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 912500e12fc1dbda0800000000000000
-      internalID: -5927549708338703847
+      spriteID: ecbc0e113f7f6d400800000000000000
+      internalID: 348738644516850638
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      mokume_natural01_0: -5927549708338703847
+      name_plate_0: 348738644516850638
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
