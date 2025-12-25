@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
     public HandKeyInput handKeyInput;
     public PortraitController portraitController;
     public RelicHUDController relicHUDController;
+    public ScorePopupSpawner scorePopupSpawner;
 
     [Header("Stage Progress")]
     [SerializeField]
@@ -158,7 +159,13 @@ public class GameManager : MonoBehaviour
         }
 
         // HUD + build labels only（手札は変更時にのみ）
-        hudController.Render(timeLeft, score, goal, lastMeasuredScorePerSec,relicSystem.GetAllOwnedCounts());
+        hudController.Render(
+            timeLeft,
+            score,
+            goal,
+            lastMeasuredScorePerSec,
+            relicSystem.GetAllOwnedCounts()
+        );
         buildingPanelController.UpdateLabels(
             buildingDefs,
             def => buildings.GetCost(def, relicSystem.BuildingCostMultiplier),
@@ -212,7 +219,13 @@ public class GameManager : MonoBehaviour
         );
 
         // render once
-        hudController.Render(timeLeft, score, goal, lastMeasuredScorePerSec, relicSystem.GetAllOwnedCounts());
+        hudController.Render(
+            timeLeft,
+            score,
+            goal,
+            lastMeasuredScorePerSec,
+            relicSystem.GetAllOwnedCounts()
+        );
         handController.Render(hand, PlayCard);
         buildingPanelController.UpdateLabels(
             buildingDefs,
@@ -294,7 +307,7 @@ public class GameManager : MonoBehaviour
         if (ended)
             return;
 
-        AudioManager.Instance?.PlaySE(SEType.CardPlay);
+        int before = score; // ★ここで記録
 
         var actor = (card.kind == CardKind.Cow) ? Actor.CowGirl : Actor.DogGirl;
         portraitController.React(card, actor);
@@ -308,6 +321,10 @@ public class GameManager : MonoBehaviour
                 continue;
             e.Apply(ctx);
         }
+
+        int gained = score - before; // ★カード1枚の純増
+        if (gained > 0)
+            scorePopupSpawner?.Show(gained);
 
         hand.Remove(card);
 
@@ -448,7 +465,13 @@ public class GameManager : MonoBehaviour
         // modalGuard.ForceReset();
 
         // 手札やHUDの再描画（必要なら）
-        hudController.Render(timeLeft, score, goal, lastMeasuredScorePerSec, relicSystem.GetAllOwnedCounts());
+        hudController.Render(
+            timeLeft,
+            score,
+            goal,
+            lastMeasuredScorePerSec,
+            relicSystem.GetAllOwnedCounts()
+        );
         handController.Render(hand, PlayCard);
 
         // 建物ボタンの表示も更新
