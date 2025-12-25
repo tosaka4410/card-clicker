@@ -1,16 +1,31 @@
 fileFormatVersion: 2
-guid: 61abf6676f9876d4496c3fedea57bd3c
+guid: db7c2e15a5254d547801e6b7d3dea7cd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5820657117508175482
-    second: HUD_Bar_0
+      213: 7055439793265659974
+    second: mogod_play_0
   - first:
-      213: -5701092108098977430
-    second: HUD_Bar_1
+      213: 519327114123893617
+    second: mogod_play_1
   - first:
-      213: -3747756197734957454
-    second: HUD_Bar_2
+      213: 5952295722706791536
+    second: mogod_play_2
+  - first:
+      213: 8688311850350992472
+    second: mogod_play_3
+  - first:
+      213: 6335836260683714614
+    second: mogod_play_4
+  - first:
+      213: -1494845939032148200
+    second: mogod_play_5
+  - first:
+      213: -4833453859708403105
+    second: mogod_play_6
+  - first:
+      213: -7097572683692018209
+    second: mogod_play_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -119,13 +134,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HUD_Bar_0
+      name: mogod_play_0
       rect:
         serializedVersion: 2
-        x: 3
-        y: 0
-        width: 1533
-        height: 214
+        x: 202
+        y: 1456
+        width: 16
+        height: 19
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,20 +149,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6897397d03fd83fa0800000000000000
-      internalID: -5820657117508175482
+      spriteID: 64051c35c15f9e160800000000000000
+      internalID: 7055439793265659974
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HUD_Bar_1
+      name: mogod_play_1
       rect:
         serializedVersion: 2
-        x: 10
-        y: 143
-        width: 7
-        height: 67
+        x: 96
+        y: 1405
+        width: 20
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,20 +171,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a614af0fee6a1e0b0800000000000000
-      internalID: -5701092108098977430
+      spriteID: 17b559f3245053700800000000000000
+      internalID: 519327114123893617
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: HUD_Bar_2
+      name: mogod_play_2
       rect:
         serializedVersion: 2
-        x: 1512
-        y: 0
-        width: 19
-        height: 11
+        x: 150
+        y: 1417
+        width: 26
+        height: 28
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,8 +193,118 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 27e3d39389b4dfbc0800000000000000
-      internalID: -3747756197734957454
+      spriteID: 07ce3065c6dca9250800000000000000
+      internalID: 5952295722706791536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mogod_play_3
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 1405
+        width: 30
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85cdcf16895139870800000000000000
+      internalID: 8688311850350992472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mogod_play_4
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 1417
+        width: 38
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6309719a2896de750800000000000000
+      internalID: 6335836260683714614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mogod_play_5
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 1420
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 817bd0ad98d314be0800000000000000
+      internalID: -1494845939032148200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mogod_play_6
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 0
+        width: 998
+        height: 1400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5207d5c25f1cecb0800000000000000
+      internalID: -4833453859708403105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mogod_play_7
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 1384
+        width: 18
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd5750daf3b508d90800000000000000
+      internalID: -7097572683692018209
       vertices: []
       indices: 
       edges: []
@@ -198,9 +323,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HUD_Bar_0: -5820657117508175482
-      HUD_Bar_1: -5701092108098977430
-      HUD_Bar_2: -3747756197734957454
+      mogod_play_0: 7055439793265659974
+      mogod_play_1: 519327114123893617
+      mogod_play_2: 5952295722706791536
+      mogod_play_3: 8688311850350992472
+      mogod_play_4: 6335836260683714614
+      mogod_play_5: -1494845939032148200
+      mogod_play_6: -4833453859708403105
+      mogod_play_7: -7097572683692018209
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

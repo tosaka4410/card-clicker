@@ -1,16 +1,10 @@
 fileFormatVersion: 2
-guid: 61abf6676f9876d4496c3fedea57bd3c
+guid: 686030f8e58816b439335f035107e3be
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5820657117508175482
-    second: HUD_Bar_0
-  - first:
-      213: -5701092108098977430
-    second: HUD_Bar_1
-  - first:
-      213: -3747756197734957454
-    second: HUD_Bar_2
+      213: -2164740187853662460
+    second: building_board_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -119,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HUD_Bar_0
+      name: building_board_0
       rect:
         serializedVersion: 2
         x: 3
         y: 0
-        width: 1533
-        height: 214
+        width: 884
+        height: 1339
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,52 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6897397d03fd83fa0800000000000000
-      internalID: -5820657117508175482
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: HUD_Bar_1
-      rect:
-        serializedVersion: 2
-        x: 10
-        y: 143
-        width: 7
-        height: 67
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a614af0fee6a1e0b0800000000000000
-      internalID: -5701092108098977430
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: HUD_Bar_2
-      rect:
-        serializedVersion: 2
-        x: 1512
-        y: 0
-        width: 19
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 27e3d39389b4dfbc0800000000000000
-      internalID: -3747756197734957454
+      spriteID: 40758f7b44c45f1e0800000000000000
+      internalID: -2164740187853662460
       vertices: []
       indices: 
       edges: []
@@ -198,9 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HUD_Bar_0: -5820657117508175482
-      HUD_Bar_1: -5701092108098977430
-      HUD_Bar_2: -3747756197734957454
+      building_board_0: -2164740187853662460
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -17,4 +17,5 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: 56a10d8fd74ecae4aab0af00a0a23eb7, type: 2}
   - {fileID: 11400000, guid: c59976ffb7dc46948ac64d4c32e8a2c4, type: 2}
+  kind: 1
   art: {fileID: -5311260494041086120, guid: 44aa10504e7d3c14a87aaf544b75c436, type: 3}
