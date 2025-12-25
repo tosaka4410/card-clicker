@@ -18,6 +18,7 @@ public enum BGMType
     Stage,
     Shop,
     Result,
+    Menu,
 }
 
 public class AudioManager : MonoBehaviour
