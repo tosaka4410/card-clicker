@@ -8,7 +8,7 @@ public class HUDController : MonoBehaviour
     [SerializeField] private Text timeText;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text goalText;
-    [SerializeField] private Text diffText;
+    [SerializeField] private Text scorePerSecText;
 
     [Header("Relics")]
     [SerializeField] private Text relicText; // 複数行表示用
@@ -16,14 +16,15 @@ public class HUDController : MonoBehaviour
     public void Render(
         float timeLeft,
         int score,
-        int goal,
+        int goal, 
+        int scorePerSec,
         IReadOnlyDictionary<RelicData, int> relicCounts
     )
     {
-        timeText.text = $"Time: {timeLeft:0.0}s";
-        scoreText.text = $"Score: {score}";
-        goalText.text = $"Goal: {goal}";
-        diffText.text = $"Diff: {goal - score}";
+        timeText.text = $"{timeLeft:0.0}s";
+        scoreText.text = $"{score}";
+        goalText.text = $"{goal}";
+        scorePerSecText.text = $"{scorePerSec}/s";
 
         if (relicText != null)
         {

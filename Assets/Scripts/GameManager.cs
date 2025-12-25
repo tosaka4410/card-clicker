@@ -40,6 +40,19 @@ public class GameManager : MonoBehaviour
     public PortraitController portraitController;
     public RelicHUDController relicHUDController;
 
+    [Header("Stage Progress")]
+    [SerializeField]
+    private int maxStage = 10;
+
+    [Header("Unityroom Score Submission")]
+    [SerializeField]
+    private int unityroomBoardNo = 1;
+
+    [SerializeField]
+    private bool sendScoreToUnityroom = true;
+
+    public int CurrentStage { get; private set; } = 1;
+
     // state
     private float timeLeft;
     private float drawTimer;
@@ -47,6 +60,17 @@ public class GameManager : MonoBehaviour
     private float autoScoreBuffer;
 
     private bool ended;
+
+    // ---- snapshots for retry ----
+    private List<CardData> initialDeckSnapshot;
+    private Dictionary<string, float> initialBuildingSps;
+    private int initialGoal;
+    private float initialStageTime;
+
+    // ---- score per second (measured) ----
+    private float scoreMeasureTimer = 0f;
+    private int scoreAccumulatedThisSecond = 0;
+    private int lastMeasuredScorePerSec = 0;
 
     private readonly ModalGuard modalGuard = new();
     public ModalGuard ModalGuard => modalGuard;
@@ -60,6 +84,16 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         ctx = new GameContext(this);
+
+        // 初期値保存（最初の1回だけ）
+        initialDeckSnapshot = new List<CardData>(startingDeck);
+        initialBuildingSps = new Dictionary<string, float>();
+        foreach (var def in buildingDefs)
+            if (def != null)
+                initialBuildingSps[def.id] = def.scorePerSec;
+
+        initialGoal = goal;
+        initialStageTime = stageTime;
 
         // init controllers
         upgradeController.Init(modalGuard);
@@ -106,6 +140,15 @@ public class GameManager : MonoBehaviour
             AddScore(add);
         }
 
+        // ---- measure score/sec ----
+        scoreMeasureTimer += Time.deltaTime;
+        if (scoreMeasureTimer >= 1f)
+        {
+            scoreMeasureTimer -= 1f;
+            lastMeasuredScorePerSec = scoreAccumulatedThisSecond;
+            scoreAccumulatedThisSecond = 0;
+        }
+
         // time draw
         float interval = drawInterval * relicSystem.DrawIntervalMultiplier;
         while (drawTimer >= interval)
@@ -115,7 +158,7 @@ public class GameManager : MonoBehaviour
         }
 
         // HUD + build labels only（手札は変更時にのみ）
-        hudController.Render(timeLeft, score, goal, relicSystem.GetAllOwnedCounts());
+        hudController.Render(timeLeft, score, goal, lastMeasuredScorePerSec,relicSystem.GetAllOwnedCounts());
         buildingPanelController.UpdateLabels(
             buildingDefs,
             def => buildings.GetCost(def, relicSystem.BuildingCostMultiplier),
@@ -169,7 +212,7 @@ public class GameManager : MonoBehaviour
         );
 
         // render once
-        hudController.Render(timeLeft, score, goal, relicSystem.GetAllOwnedCounts());
+        hudController.Render(timeLeft, score, goal, lastMeasuredScorePerSec, relicSystem.GetAllOwnedCounts());
         handController.Render(hand, PlayCard);
         buildingPanelController.UpdateLabels(
             buildingDefs,
@@ -194,7 +237,12 @@ public class GameManager : MonoBehaviour
     public void AddScore(int amount)
     {
         int v = Mathf.RoundToInt(amount * relicSystem.ScoreMultiplier);
-        score += Mathf.Max(0, v);
+        v = Mathf.Max(0, v);
+
+        score += v;
+
+        // DPS計測用
+        scoreAccumulatedThisSecond += v;
     }
 
     public bool TryPayScore(int amount)
@@ -279,12 +327,26 @@ public class GameManager : MonoBehaviour
         resultController.Show(
             cleared,
             onNext: () => ShowRelicChoices(),
-            onRetry: () => StartStage()
+            onRetry: () =>
+            {
+                ResetRun();
+                StartStage();
+            }
         );
     }
 
     void ShowRelicChoices()
     {
+        // ここでステージを進める
+        CurrentStage++;
+
+        // 10ステージ超えたら終了
+        if (CurrentStage > maxStage)
+        {
+            ShowFinalResult();
+            return;
+        }
+
         var relics = relicSystem.RollRelics(3);
 
         relicController.Show(
@@ -292,7 +354,6 @@ public class GameManager : MonoBehaviour
             relic =>
             {
                 relicSystem.AddRelic(relic);
-                RefreshRelicHUD();
 
                 goal = Mathf.RoundToInt(goal * 1.35f + 200);
                 stageTime = Mathf.Max(60f, stageTime - 5f);
@@ -387,7 +448,7 @@ public class GameManager : MonoBehaviour
         // modalGuard.ForceReset();
 
         // 手札やHUDの再描画（必要なら）
-        hudController.Render(timeLeft, score, goal, relicSystem.GetAllOwnedCounts());
+        hudController.Render(timeLeft, score, goal, lastMeasuredScorePerSec, relicSystem.GetAllOwnedCounts());
         handController.Render(hand, PlayCard);
 
         // 建物ボタンの表示も更新
@@ -405,5 +466,79 @@ public class GameManager : MonoBehaviour
         if (relicHUDController == null || relicSystem == null)
             return;
         relicHUDController.Refresh(relicSystem.GetAllOwnedCounts());
+    }
+
+    void ShowFinalResult()
+    {
+        ended = true;
+
+        SendUnityroomScore(score);
+
+        resultController.Show(
+            true,
+            onNext: () =>
+            {
+                // 例：メニューに戻す
+                SceneLoader.LoadMenu();
+            },
+            onRetry: () =>
+            {
+                // 最初からやり直す
+                ResetRun();
+                StartStage();
+            }
+        );
+    }
+
+    void ResetRun()
+    {
+        // ステージ進行（もし使ってるなら）
+        CurrentStage = 1;
+
+        // ゴール/制限時間を初期に戻す
+        goal = initialGoal;
+        stageTime = initialStageTime;
+
+        // ★デッキを初期に戻す（参照を戻すだけでOK）
+        startingDeck.Clear();
+        startingDeck.AddRange(initialDeckSnapshot);
+
+        // ★建物の「強化された scorePerSec」を初期値に戻す
+        foreach (var def in buildingDefs)
+        {
+            if (def == null)
+                continue;
+            if (initialBuildingSps.TryGetValue(def.id, out var sps))
+                def.scorePerSec = sps;
+        }
+
+        // ★建物システムを初期化（builtCount/activeCount/totalBuiltCountリセット）
+        buildings = new BuildingSystem();
+
+        // ★レリック初期化
+        relicSystem.ResetRelics();
+
+        // ついで：モーダル状態も初期化
+        modalGuard.ForceReset();
+
+        Debug.Log("[Run] ResetRun done.");
+    }
+
+    void SendUnityroomScore(int finalScore)
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        if (!sendScoreToUnityroom)
+            return;
+
+        // unityroom用
+        // using unityroom.Api; が必要
+        UnityroomApiClient.Instance.SendScore(
+            unityroomBoardNo,
+            (float)finalScore,
+            ScoreboardWriteMode.HighScoreDesc // 例：ハイスコア（降順）
+        );
+#else
+        Debug.Log($"[unityroom] (dry-run) SendScore board={unityroomBoardNo} score={finalScore}");
+#endif
     }
 }

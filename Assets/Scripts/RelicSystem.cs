@@ -16,13 +16,14 @@ public class RelicSystem : MonoBehaviour
     // ★追加：特定レリックの所持数
     public int GetOwnedCount(RelicData relic)
     {
-        if (relic == null) return 0;
+        if (relic == null)
+            return 0;
         return ownedCounts.TryGetValue(relic, out var c) ? c : 0;
     }
 
     // ★追加：HUD表示などで使う（コピーを返して安全に）
-    public IReadOnlyDictionary<RelicData, int> GetAllOwnedCounts()
-        => new Dictionary<RelicData, int>(ownedCounts);
+    public IReadOnlyDictionary<RelicData, int> GetAllOwnedCounts() =>
+        new Dictionary<RelicData, int>(ownedCounts);
 
     public float DrawIntervalMultiplier { get; private set; } = 1f;
     public float ScoreMultiplier { get; private set; } = 1f;
@@ -44,7 +45,8 @@ public class RelicSystem : MonoBehaviour
 
     public void AddRelic(RelicData relic)
     {
-        if (relic == null) return;
+        if (relic == null)
+            return;
 
         ownedRelics.Add(relic);
 
@@ -57,6 +59,17 @@ public class RelicSystem : MonoBehaviour
         Debug.Log($"[Relic] Gained {relic.relicName} (x{GetOwnedCount(relic)})");
     }
 
-    public List<RelicData> RollRelics(int count = 3)
-        => RandomPicker.PickUnique(relicPool, count);
+    public List<RelicData> RollRelics(int count = 3) => RandomPicker.PickUnique(relicPool, count);
+
+    public void ResetRelics()
+    {
+        ownedRelics.Clear();
+
+        DrawIntervalMultiplier = 1f;
+        ScoreMultiplier = 1f;
+        BuildingCostMultiplier = 1f;
+        TimeBonus = 0f;
+
+        Debug.Log("[Relic] Reset");
+    }
 }
