@@ -39,6 +39,9 @@ public class GameManager : MonoBehaviour
     public HandKeyInput handKeyInput;
     public PortraitController portraitController;
     public RelicHUDController relicHUDController;
+
+    [SerializeField]
+    private TickerController tickerController;
     public ScorePopupSpawner scorePopupSpawner;
 
     [Header("Stage Progress")]
@@ -117,6 +120,11 @@ public class GameManager : MonoBehaviour
             handKeyInput.CanPlay = CanPlayCardByKey;
             handKeyInput.GetHandCount = () => hand.Count;
             handKeyInput.PlayHandIndex = i => PlayCard(hand[i]);
+        }
+
+        if (tickerController != null)
+        {
+            tickerController.SetProvider(() => BuildTickerMessages());
         }
 
         StartStage();
@@ -545,6 +553,27 @@ public class GameManager : MonoBehaviour
         modalGuard.ForceReset();
 
         Debug.Log("[Run] ResetRun done.");
+    }
+
+    IEnumerable<string> BuildTickerMessages()
+    {
+        yield return "現在ステージ {stage} です。";
+        yield return "ステージ10をクリアするとゲームクリア！";
+        yield return "時間切れになるとゲームオーバーだよ。";
+        yield return "目標スコアを達成してステージを突破しよう！";
+        yield return "スコアは施設とカードで増えていくよ。";
+        yield return "同じ施設をたくさん建てると建設コストが上がるぞ。";
+        yield return "カードは使うと捨て札に行くよ。";
+        yield return "山札がなくなると捨て札がシャッフルされるよ。";
+        yield return "手札が上限を超えるとカードは引けないよ。";
+        yield return "強化されたカードはデッキに永続的に残る！";
+        yield return "消滅したカードは次のステージで復活するぞ！";
+        yield return "カード効果は順番にすべて発動するよ。";
+        yield return "DPSは Drink Per Second の略だよ！";
+        yield return "建物は毎秒スコアを生み出すぞ。";
+        yield return "建物を10個建てるとカードのアップグレードが発生！";
+        yield return "ステージをまたいでも建物は引き継がれるよ。";
+        yield return "建物は10個建てるごとに性能が強化されるぞ！";
     }
 
     void SendUnityroomScore(int finalScore)
