@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Strike
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: "\u3068\u308A\u3042\u3048\u305A\u751F"
-  description: 
+  description: "\u30B9\u30B3\u30A2\u309250\u5F97\u308B\u3002"
   effects:
   - {fileID: 11400000, guid: c961301e19432b24da6a5eacb5ae3bb1, type: 2}
   kind: 1

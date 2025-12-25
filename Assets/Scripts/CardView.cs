@@ -124,7 +124,7 @@ public class CardView : MonoBehaviour
         {
             foreach (var e in card.effects)
                 if (e != null)
-                    sb.AppendLine($"- {e.name}");
+                    sb.AppendLine($"{e.name}");
         }
         return sb.ToString();
     }

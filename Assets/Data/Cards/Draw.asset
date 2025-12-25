@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Draw
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: "\u3069\u3046\u305E\uFF01"
-  description: 
+  description: "\u30AB\u30FC\u30C9\u3092\uFF12\u679A\u5F15\u304F\u3002"
   effects:
   - {fileID: 11400000, guid: bad061489c3a15d468cf7462fe5e0597, type: 2}
+  kind: 0
   art: {fileID: -4974441828781582245, guid: edd470b0c2b3b944980152450cc3aea0, type: 3}

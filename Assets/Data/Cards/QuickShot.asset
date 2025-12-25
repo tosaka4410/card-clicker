@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: QuickShot
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: "\u304A\u304B\u308F\u308A\uFF01"
-  description: 
+  description: "\u30B9\u30B3\u30A2\u309230\u5F97\u308B\u3002\n\u30AB\u30FC\u30C9\u3092\uFF11\u679A\u5F15\u304F\u3002"
   effects:
   - {fileID: 11400000, guid: c22f759ebfa8ad5458b860dd5dcd89ba, type: 2}
   - {fileID: 11400000, guid: 1617965b9d9412349901ea1ce83bc86c, type: 2}
+  kind: 0
   art: {fileID: 3432353941474130832, guid: ef44600e31b3c304a82cedca5be8ad89, type: 3}

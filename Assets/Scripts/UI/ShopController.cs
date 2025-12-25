@@ -88,7 +88,11 @@ public class ShopController : MonoBehaviour
                 onClick: _ =>
                 {
                     if (!tryPay(item.cost))
+                    {
+                        AudioManager.Instance?.PlaySE(SEType.Error);
                         return;
+                    }
+                    AudioManager.Instance?.PlaySE(SEType.Buy);
                     onBuy?.Invoke(item.card);
                     view.SetSold(true);
                 },

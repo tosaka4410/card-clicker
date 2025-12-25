@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Reverse
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: "\u30EA\u30D0\u30FC\u30B9"
-  description: 
+  description: "\u30B9\u30B3\u30A2\u3092\u3059\u3079\u3066\u5931\u3046\u3002\n\u5236\u9650\u6642\u9593\u304C\uFF13\u79D2\u4F38\u3073\u308B\u3002"
   effects:
   - {fileID: 11400000, guid: 3ee1a3d93bcad794384fdba5e1bf4780, type: 2}
   kind: 1

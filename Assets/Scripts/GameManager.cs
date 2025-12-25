@@ -35,9 +35,9 @@ public class GameManager : MonoBehaviour
     public RelicController relicController;
     public DeckViewController deckViewController;
     public ResultController resultController;
+    public SettingsUI settingsUI;
     public HandKeyInput handKeyInput;
     public PortraitController portraitController;
-
 
     // state
     private float timeLeft;
@@ -65,6 +65,7 @@ public class GameManager : MonoBehaviour
         relicController.Init(modalGuard);
         resultController.Init(modalGuard);
 
+
         shopController.Init(
             shopSystem,
             modalGuard,
@@ -74,6 +75,7 @@ public class GameManager : MonoBehaviour
         );
 
         deckViewController.Init(modalGuard, () => startingDeck);
+        settingsUI.Init(modalGuard);
 
         if (handKeyInput != null)
         {
@@ -133,6 +135,8 @@ public class GameManager : MonoBehaviour
     {
         modalGuard.ForceReset();
 
+        AudioManager.Instance?.PlayBGM(BGMType.Stage);
+
         ended = false;
 
         timeLeft = stageTime + relicSystem.TimeBonus; // TimeBonusを使うなら
@@ -155,7 +159,10 @@ public class GameManager : MonoBehaviour
 
                 bool ok = buildings.TryBuild(def, relicSystem.BuildingCostMultiplier, TryPayScore);
                 if (ok)
+                {
+                    AudioManager.Instance?.PlaySE(SEType.Build);
                     CheckBuildingMilestone(def);
+                }
                 return ok;
             }
         );
@@ -209,6 +216,7 @@ public class GameManager : MonoBehaviour
             if (c == null)
                 break;
             hand.Add(c);
+            AudioManager.Instance?.PlaySE(SEType.CardDraw);
             changed = true;
         }
 
@@ -236,7 +244,9 @@ public class GameManager : MonoBehaviour
     {
         if (ended)
             return;
-        
+
+        AudioManager.Instance?.PlaySE(SEType.CardPlay);
+
         var actor = (card.kind == CardKind.Cow) ? Actor.CowGirl : Actor.DogGirl;
         portraitController.React(card, actor);
 
@@ -264,6 +274,7 @@ public class GameManager : MonoBehaviour
     {
         ended = true;
 
+        AudioManager.Instance?.PlaySE(cleared ? SEType.StageClear : SEType.GameOver);
         resultController.Show(
             cleared,
             onNext: () => ShowRelicChoices(),

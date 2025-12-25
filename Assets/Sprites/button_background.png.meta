@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 8b1b63528503c064daa46b62c45fb6c2
+guid: 062fd773b39b7ff4f989caf0d479be32
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3231263632139094836
-    second: shop_icon_0
+      213: -9048593517765135490
+    second: button_background_0
   - first:
-      213: 8554622852835586893
-    second: shop_icon_1
+      213: -442624274098425108
+    second: button_background_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -116,13 +116,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: shop_icon_0
+      name: button_background_0
       rect:
         serializedVersion: 2
-        x: 216
-        y: 318
-        width: 594
-        height: 478
+        x: 110
+        y: 88
+        width: 810
+        height: 823
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +131,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cc4f5b6b8de3823d0800000000000000
-      internalID: -3231263632139094836
+      spriteID: e73f4b81320fc6280800000000000000
+      internalID: -9048593517765135490
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: shop_icon_1
+      name: button_background_1
       rect:
         serializedVersion: 2
-        x: 546
-        y: 226
-        width: 303
-        height: 316
+        x: 167
+        y: 106
+        width: 8
+        height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,8 +153,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d4334ba092028b670800000000000000
-      internalID: 8554622852835586893
+      spriteID: ce2f56d519b7bd9f0800000000000000
+      internalID: -442624274098425108
       vertices: []
       indices: 
       edges: []
@@ -173,8 +173,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      shop_icon_0: -3231263632139094836
-      shop_icon_1: 8554622852835586893
+      button_background_0: -9048593517765135490
+      button_background_1: -442624274098425108
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
