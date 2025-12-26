@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using unityroom.Api;
 
 public class GameManager : MonoBehaviour
 {
