@@ -274,6 +274,8 @@ public class GameManager : MonoBehaviour
 
         int v = Mathf.RoundToInt(amount * mul);
         score += Mathf.Max(0, v);
+        
+        scoreAccumulatedThisSecond += v;
     }
 
     public bool TryPayScore(int amount)
