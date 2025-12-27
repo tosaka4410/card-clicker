@@ -6,7 +6,10 @@ public enum RelicType
     DrawSpeedUp,
     ScoreMultiplier,
     BuildingCostDown,
-    TimeBonus
+    TimeBonus,
+    CardScoreMultiplier,
+    BuildingDpsMultiplier, 
+    CardScorePerBuilding,
 }
 
 [CreateAssetMenu(menuName = "Relic/RelicData")]
@@ -20,4 +23,6 @@ public class RelicData : ScriptableObject
     public float value;
     [Header("Visual")]
     public Sprite icon; 
+    [Header("Optional Target")]
+    public string targetBuildingId;
 }

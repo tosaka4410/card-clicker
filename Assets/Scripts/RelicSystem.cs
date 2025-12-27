@@ -29,8 +29,11 @@ public class RelicSystem : MonoBehaviour
     public float ScoreMultiplier { get; private set; } = 1f;
     public float BuildingCostMultiplier { get; private set; } = 1f;
     public float TimeBonus { get; private set; } = 0f;
+    public float CardScoreMultiplier { get; private set; } = 1f;
 
     private Dictionary<RelicType, Action<float>> appliers;
+    private readonly Dictionary<string, float> buildingDpsMul = new();
+    private readonly List<RelicData> cardPerBuildingRelics = new();
 
     void Awake()
     {
@@ -40,6 +43,7 @@ public class RelicSystem : MonoBehaviour
             { RelicType.ScoreMultiplier, v => ScoreMultiplier *= v },
             { RelicType.BuildingCostDown, v => BuildingCostMultiplier *= v },
             { RelicType.TimeBonus, v => TimeBonus += v },
+            { RelicType.CardScoreMultiplier, v => CardScoreMultiplier *= v },
         };
     }
 
@@ -50,13 +54,23 @@ public class RelicSystem : MonoBehaviour
 
         ownedRelics.Add(relic);
 
-        // ★追加：カウント更新
-        ownedCounts[relic] = GetOwnedCount(relic) + 1;
+        if (relic.type == RelicType.CardScorePerBuilding)
+        {
+            cardPerBuildingRelics.Add(relic);
+            return;
+        }
+        if (relic.type == RelicType.BuildingDpsMultiplier)
+        {
+            if (string.IsNullOrEmpty(relic.targetBuildingId))
+                return;
+
+            float cur = buildingDpsMul.TryGetValue(relic.targetBuildingId, out var m) ? m : 1f;
+            buildingDpsMul[relic.targetBuildingId] = cur * relic.value;
+            return;
+        }
 
         if (appliers.TryGetValue(relic.type, out var apply))
             apply(relic.value);
-
-        Debug.Log($"[Relic] Gained {relic.relicName} (x{GetOwnedCount(relic)})");
     }
 
     public List<RelicData> RollRelics(int count = 3) => RandomPicker.PickUnique(relicPool, count);
@@ -71,5 +85,30 @@ public class RelicSystem : MonoBehaviour
         TimeBonus = 0f;
 
         Debug.Log("[Relic] Reset");
+    }
+
+    public float GetBuildingDpsMultiplier(string buildingId)
+    {
+        if (string.IsNullOrEmpty(buildingId))
+            return 1f;
+        return buildingDpsMul.TryGetValue(buildingId, out var m) ? m : 1f;
+    }
+
+    public float GetDynamicCardScoreMultiplier(Func<string, int> getActiveBuildingCount)
+    {
+        float mul = 1f;
+
+        foreach (var r in cardPerBuildingRelics)
+        {
+            if (r == null || string.IsNullOrEmpty(r.targetBuildingId))
+                continue;
+
+            int n = getActiveBuildingCount?.Invoke(r.targetBuildingId) ?? 0;
+
+            // 例：n個で (1 + value*n) 倍  ※ value=0.1なら10%ずつ
+            mul *= (1f + r.value * n);
+        }
+
+        return mul;
     }
 }

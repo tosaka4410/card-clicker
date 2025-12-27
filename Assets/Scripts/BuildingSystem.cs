@@ -42,11 +42,14 @@ public class BuildingSystem
         return true;
     }
 
-    public float GetTotalScorePerSec(List<BuildingDef> defs)
+    public float GetTotalScorePerSec(List<BuildingDef> defs, RelicSystem relics)
     {
         float total = 0f;
         foreach (var def in defs)
-            total += def.scorePerSec * GetActiveCount(def.id);
+        {
+            float mul = relics != null ? relics.GetBuildingDpsMultiplier(def.id) : 1f;
+            total += def.scorePerSec * mul * GetActiveCount(def.id);
+        }
         return total;
     }
 

@@ -9,7 +9,7 @@ public class GameContext
     // このカードはプレイ後に消滅するか
     public bool ExhaustThisCard { get; set; } = false;
 
-    public void AddScore(int amount) => gm.AddScore(amount);
+    public void AddScore(int amount) => gm.AddScore(amount, ScoreSource.Card);
     public bool TryPayScore(int amount) => gm.TryPayScore(amount);
 
     public void Draw(int amount) => gm.DrawCards(amount);

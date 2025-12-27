@@ -141,13 +141,14 @@ public class GameManager : MonoBehaviour
         drawTimer += Time.deltaTime;
 
         // auto score
-        float sps = buildings.GetTotalScorePerSec(buildingDefs);
+        float sps = buildings.GetTotalScorePerSec(buildingDefs, relicSystem);
+
         autoScoreBuffer += sps * Time.deltaTime;
         int add = Mathf.FloorToInt(autoScoreBuffer);
         if (add > 0)
         {
             autoScoreBuffer -= add;
-            AddScore(add);
+            AddScore(add, ScoreSource.Auto);
         }
 
         // ---- measure score/sec ----
@@ -256,15 +257,22 @@ public class GameManager : MonoBehaviour
 
     // ---- score/time api (used by GameContext / effects) ----
 
-    public void AddScore(int amount)
+    public void AddScore(int amount, ScoreSource source = ScoreSource.Other)
     {
-        int v = Mathf.RoundToInt(amount * relicSystem.ScoreMultiplier);
-        v = Mathf.Max(0, v);
+        float mul = 1f;
 
-        score += v;
+        // 既存：全体倍率（将来の別レリック等に使える）
+        mul *= relicSystem.ScoreMultiplier;
 
-        // DPS計測用
-        scoreAccumulatedThisSecond += v;
+        // カード由来だけ別倍率
+        if (source == ScoreSource.Card)
+        {
+            mul *= relicSystem.CardScoreMultiplier;
+            mul *= relicSystem.GetDynamicCardScoreMultiplier(id => buildings.GetActiveCount(id));
+        }
+
+        int v = Mathf.RoundToInt(amount * mul);
+        score += Mathf.Max(0, v);
     }
 
     public bool TryPayScore(int amount)
