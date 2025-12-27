@@ -52,22 +52,29 @@ public class RelicSystem : MonoBehaviour
         if (relic == null)
             return;
 
+        ownedCounts[relic] = GetOwnedCount(relic) + 1;
         ownedRelics.Add(relic);
 
-        if (relic.type == RelicType.CardScorePerBuilding)
-        {
-            cardPerBuildingRelics.Add(relic);
-            return;
-        }
-        if (relic.type == RelicType.BuildingDpsMultiplier)
-        {
-            if (string.IsNullOrEmpty(relic.targetBuildingId))
-                return;
+        // if (relic.type == RelicType.CardScorePerBuilding)
+        // {
+        //     cardPerBuildingRelics.Add(relic);
+        //     return;
+        // }
+        // if (relic.type == RelicType.BuildingDpsMultiplier)
+        // {
+        //     if (string.IsNullOrEmpty(relic.targetBuildingId))
+        //         return;
 
-            float cur = buildingDpsMul.TryGetValue(relic.targetBuildingId, out var m) ? m : 1f;
-            buildingDpsMul[relic.targetBuildingId] = cur * relic.value;
+        //     float cur = buildingDpsMul.TryGetValue(relic.targetBuildingId, out var m) ? m : 1f;
+        //     buildingDpsMul[relic.targetBuildingId] = cur * relic.value;
+        //     return;
+        // }
+        if (relic.type == RelicType.CardScorePerBuilding)
             return;
-        }
+        if (relic.type == RelicType.BuildingDpsMultiplier)
+            return;
+        if (relic.type == RelicType.BuildingCostDown)
+            return;
 
         if (appliers.TryGetValue(relic.type, out var apply))
             apply(relic.value);
@@ -78,6 +85,9 @@ public class RelicSystem : MonoBehaviour
     public void ResetRelics()
     {
         ownedRelics.Clear();
+        ownedCounts.Clear();
+        buildingDpsMul.Clear();
+        cardPerBuildingRelics.Clear();
 
         DrawIntervalMultiplier = 1f;
         ScoreMultiplier = 1f;

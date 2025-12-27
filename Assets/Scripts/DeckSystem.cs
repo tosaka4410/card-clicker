@@ -6,6 +6,8 @@ public class DeckSystem
 {
     private readonly List<CardData> drawPile = new();
     private readonly List<CardData> discardPile = new();
+    public int DrawCount => drawPile.Count; 
+    public int DiscardCount => discardPile.Count;
 
     public void Init(IEnumerable<CardData> initialDeck)
     {

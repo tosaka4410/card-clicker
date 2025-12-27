@@ -1,5 +1,5 @@
+// Assets/Scripts/GameManager.cs
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using UnityEngine;
 using unityroom.Api;
 
@@ -16,22 +16,15 @@ public class GameManager : MonoBehaviour
 
     [Header("Data")]
     public List<CardData> startingDeck = new();
-    public List<BuildingDef> buildingDefs = new();
 
     [Header("Systems")]
     public UpgradeSystem upgradeSystem;
     public ShopSystem shopSystem;
     public RelicSystem relicSystem;
 
-    [Header("Building Milestone")]
-    public int buildingMilestoneStep = 10;
-    public float buildingBonusRate = 1.15f;
-    private readonly Dictionary<string, int> nextBuildingMilestone = new();
-
     [Header("Controllers")]
     public HUDController hudController;
     public HandController handController;
-    public BuildingPanelController buildingPanelController;
     public ShopController shopController;
     public UpgradeController upgradeController;
     public RelicController relicController;
@@ -44,7 +37,13 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private TickerController tickerController;
+
     public ScorePopupSpawner scorePopupSpawner;
+
+    [Header("Upgrade Button (施設廃止の代替)")]
+    public UpgradeButtonController upgradeButtonController;
+    public int upgradeButtonBaseCost = 250;
+    public float upgradeButtonCostRate = 1.35f;
 
     [Header("Stage Progress")]
     [SerializeField]
@@ -63,13 +62,11 @@ public class GameManager : MonoBehaviour
     private float timeLeft;
     private float drawTimer;
     private int score;
-    private float autoScoreBuffer;
 
     private bool ended;
 
     // ---- snapshots for retry ----
     private List<CardData> initialDeckSnapshot;
-    private Dictionary<string, float> initialBuildingSps;
     private int initialGoal;
     private float initialStageTime;
 
@@ -78,12 +75,14 @@ public class GameManager : MonoBehaviour
     private int scoreAccumulatedThisSecond = 0;
     private int lastMeasuredScorePerSec = 0;
 
+    // ---- upgrade button ----
+    private int totalUpgradeCount = 0;
+
     private readonly ModalGuard modalGuard = new();
     public ModalGuard ModalGuard => modalGuard;
 
     private readonly DeckSystem deck = new();
     private readonly List<CardData> hand = new();
-    private BuildingSystem buildings = new();
 
     private GameContext ctx;
 
@@ -93,11 +92,6 @@ public class GameManager : MonoBehaviour
 
         // 初期値保存（最初の1回だけ）
         initialDeckSnapshot = new List<CardData>(startingDeck);
-        initialBuildingSps = new Dictionary<string, float>();
-        foreach (var def in buildingDefs)
-            if (def != null)
-                initialBuildingSps[def.id] = def.scorePerSec;
-
         initialGoal = goal;
         initialStageTime = stageTime;
 
@@ -141,17 +135,6 @@ public class GameManager : MonoBehaviour
         timeLeft -= Time.deltaTime;
         drawTimer += Time.deltaTime;
 
-        // auto score
-        float sps = buildings.GetTotalScorePerSec(buildingDefs, relicSystem);
-
-        autoScoreBuffer += sps * Time.deltaTime;
-        int add = Mathf.FloorToInt(autoScoreBuffer);
-        if (add > 0)
-        {
-            autoScoreBuffer -= add;
-            AddScore(add, ScoreSource.Auto);
-        }
-
         // ---- measure score/sec ----
         scoreMeasureTimer += Time.deltaTime;
         if (scoreMeasureTimer >= 1f)
@@ -169,20 +152,15 @@ public class GameManager : MonoBehaviour
             DrawCards(1);
         }
 
-        // HUD + build labels only（手札は変更時にのみ）
+        // HUD（手札は変更時のみ Render）
         hudController.Render(
             timeLeft,
             score,
             goal,
             lastMeasuredScorePerSec,
-            relicSystem.GetAllOwnedCounts()
-        );
-        buildingPanelController.UpdateLabels(
-            buildingDefs,
-            def => buildings.GetCost(def, relicSystem.BuildingCostMultiplier),
-            def => buildings.GetActiveCount(def.id),
-            () => score,
-            () => ended
+            relicSystem.GetAllOwnedCounts(),
+            deck.DrawCount,
+            deck.DiscardCount
         );
 
         if (timeLeft <= 0f)
@@ -201,33 +179,30 @@ public class GameManager : MonoBehaviour
 
         ended = false;
 
-        timeLeft = stageTime + relicSystem.TimeBonus; // TimeBonusを使うなら
+        timeLeft = stageTime + relicSystem.TimeBonus;
         drawTimer = 0f;
         score = 0;
-        autoScoreBuffer = 0f;
+
+        // 測定用もリセット（好み）
+        scoreMeasureTimer = 0f;
+        scoreAccumulatedThisSecond = 0;
+        lastMeasuredScorePerSec = 0;
 
         deck.Init(startingDeck);
         hand.Clear();
         DrawCards(startingHand);
 
-        InitBuildingMilestones();
-
-        buildingPanelController.BuildButtons(
-            buildingDefs,
-            def =>
-            {
-                if (ended)
-                    return false;
-
-                bool ok = buildings.TryBuild(def, relicSystem.BuildingCostMultiplier, TryPayScore);
-                if (ok)
-                {
-                    AudioManager.Instance?.PlaySE(SEType.Build);
-                    CheckBuildingMilestone(def);
-                }
-                return ok;
-            }
-        );
+        // アップグレードボタン（ステージごとに回数リセット）
+        if (upgradeButtonController != null)
+        {
+            upgradeButtonController.Init(
+                getCost: GetUpgradeButtonCost,
+                getScore: () => score,
+                canUse: CanUseUpgradeButton,
+                onClick: TryOpenUpgradeFromButton,
+                getUses: null
+            );
+        }
 
         // render once
         hudController.Render(
@@ -235,16 +210,11 @@ public class GameManager : MonoBehaviour
             score,
             goal,
             lastMeasuredScorePerSec,
-            relicSystem.GetAllOwnedCounts()
+            relicSystem.GetAllOwnedCounts(),
+            deck.DrawCount,
+            deck.DiscardCount
         );
         handController.Render(hand, PlayCard);
-        buildingPanelController.UpdateLabels(
-            buildingDefs,
-            def => buildings.GetCost(def, relicSystem.BuildingCostMultiplier),
-            def => buildings.GetActiveCount(def.id),
-            () => score,
-            () => ended
-        );
     }
 
     bool CanPlayCardByKey()
@@ -252,7 +222,7 @@ public class GameManager : MonoBehaviour
         if (ended)
             return false;
         if (modalGuard.IsLocked)
-            return false; // ここが肝
+            return false;
         return true;
     }
 
@@ -262,20 +232,20 @@ public class GameManager : MonoBehaviour
     {
         float mul = 1f;
 
-        // 既存：全体倍率（将来の別レリック等に使える）
+        // 全体倍率
         mul *= relicSystem.ScoreMultiplier;
 
-        // カード由来だけ別倍率
+        // カード由来だけ別倍率（施設依存倍率は廃止）
         if (source == ScoreSource.Card)
         {
             mul *= relicSystem.CardScoreMultiplier;
-            mul *= relicSystem.GetDynamicCardScoreMultiplier(id => buildings.GetActiveCount(id));
         }
 
         int v = Mathf.RoundToInt(amount * mul);
         score += Mathf.Max(0, v);
-        
+
         scoreAccumulatedThisSecond += v;
+        shopController.RefreshOpenCostUI();
     }
 
     public bool TryPayScore(int amount)
@@ -294,9 +264,11 @@ public class GameManager : MonoBehaviour
         {
             if (hand.Count >= handLimit)
                 break;
+
             var c = deck.DrawOne();
             if (c == null)
                 break;
+
             hand.Add(c);
             AudioManager.Instance?.PlaySE(SEType.CardDraw);
             changed = true;
@@ -327,7 +299,7 @@ public class GameManager : MonoBehaviour
         if (ended)
             return;
 
-        int before = score; // ★ここで記録
+        int before = score;
 
         var actor = (card.kind == CardKind.Cow) ? Actor.CowGirl : Actor.DogGirl;
         portraitController.React(card, actor);
@@ -342,7 +314,7 @@ public class GameManager : MonoBehaviour
             e.Apply(ctx);
         }
 
-        int gained = score - before; // ★カード1枚の純増
+        int gained = score - before;
         if (gained > 0)
             scorePopupSpawner?.Show(gained);
 
@@ -355,88 +327,46 @@ public class GameManager : MonoBehaviour
         handController.Render(hand, PlayCard);
     }
 
-    // ---- stage end / flow ----
+    // ---- upgrade button flow ----
 
-    void EndStage(bool cleared)
+    int GetUpgradeButtonCost()
     {
-        ended = true;
-
-        AudioManager.Instance?.PlaySE(cleared ? SEType.StageClear : SEType.GameOver);
-        resultController.Show(
-            cleared,
-            CurrentStage,
-            onNext: () => ShowRelicChoices(),
-            onRetry: () =>
-            {
-                ResetRun();
-                StartStage();
-            }
+        return Mathf.CeilToInt(
+            upgradeButtonBaseCost * Mathf.Pow(upgradeButtonCostRate, totalUpgradeCount)
         );
     }
 
-    void ShowRelicChoices()
+    bool CanUseUpgradeButton()
     {
-        // ここでステージを進める
-        CurrentStage++;
+        if (ended)
+            return false;
+        if (modalGuard.IsLocked)
+            return false;
 
-        // 10ステージ超えたら終了
-        if (CurrentStage > maxStage)
+        return true;
+    }
+
+    void TryOpenUpgradeFromButton()
+    {
+        if (!CanUseUpgradeButton())
+            return;
+
+        int cost = GetUpgradeButtonCost();
+        if (!TryPayScore(cost))
         {
-            ShowFinalResult();
+            AudioManager.Instance?.PlaySE(SEType.Error);
             return;
         }
 
-        var relics = relicSystem.RollRelics(3);
+        totalUpgradeCount++;
+        // それっぽいSE（専用があれば差し替え推奨）
+        AudioManager.Instance?.PlaySE(SEType.Buy);
 
-        relicController.Show(
-            relics,
-            relic =>
-            {
-                relicSystem.AddRelic(relic);
-
-                goal = Mathf.RoundToInt(goal * 1.35f + 200);
-                stageTime = Mathf.Max(60f, stageTime - 5f);
-                StartStage();
-            }
-        );
+        ShowUpgradeChoicesFromButton();
     }
 
-    // ---- building milestone -> upgrade ----
-
-    void InitBuildingMilestones()
+    void ShowUpgradeChoicesFromButton()
     {
-        nextBuildingMilestone.Clear();
-
-        foreach (var def in buildingDefs)
-        {
-            int built = buildings.GetBuiltCount(def.id);
-
-            // built=0..9 -> next=10
-            // built=10..19 -> next=20
-            // built=20..29 -> next=30
-            int next = ((built / buildingMilestoneStep) + 1) * buildingMilestoneStep;
-
-            nextBuildingMilestone[def.id] = next;
-        }
-    }
-
-    void CheckBuildingMilestone(BuildingDef def)
-    {
-        int built = buildings.GetBuiltCount(def.id);
-        int next = nextBuildingMilestone[def.id];
-        if (built < next)
-            return;
-
-        nextBuildingMilestone[def.id] += buildingMilestoneStep;
-        OnBuildingMilestoneReached(def, built);
-    }
-
-    void OnBuildingMilestoneReached(BuildingDef def, int builtCount)
-    {
-        // facility buff
-        def.scorePerSec *= buildingBonusRate;
-
-        // create choices
         var upgrades = upgradeSystem.RollUpgrades(3);
         var choices = new List<UpgradeChoice>();
 
@@ -444,16 +374,19 @@ public class GameManager : MonoBehaviour
         {
             if (startingDeck.Count == 0)
                 continue;
+
             var target = startingDeck[Random.Range(0, startingDeck.Count)];
             choices.Add(new UpgradeChoice { upgrade = up, targetCard = target });
         }
+
+        if (choices.Count == 0)
+            return;
 
         upgradeController.Show(
             choices,
             choice =>
             {
                 ApplyUpgrade(choice);
-
                 ResumeAfterUpgrade();
             }
         );
@@ -482,27 +415,62 @@ public class GameManager : MonoBehaviour
 
     void ResumeAfterUpgrade()
     {
-        // ModalGuard / UpgradeController が Unlock している前提ならここは不要
-        // 念のため入れるなら：
-        // modalGuard.ForceReset();
-
         // 手札やHUDの再描画（必要なら）
         hudController.Render(
             timeLeft,
             score,
             goal,
             lastMeasuredScorePerSec,
-            relicSystem.GetAllOwnedCounts()
+            relicSystem.GetAllOwnedCounts(),
+            deck.DrawCount,
+            deck.DiscardCount
         );
         handController.Render(hand, PlayCard);
+    }
 
-        // 建物ボタンの表示も更新
-        buildingPanelController.UpdateLabels(
-            buildingDefs,
-            def => buildings.GetCost(def, relicSystem.BuildingCostMultiplier),
-            def => buildings.GetActiveCount(def.id),
-            () => score,
-            () => ended
+    // ---- stage end / flow ----
+
+    void EndStage(bool cleared)
+    {
+        ended = true;
+
+        AudioManager.Instance?.PlaySE(cleared ? SEType.StageClear : SEType.GameOver);
+        resultController.Show(
+            cleared,
+            CurrentStage,
+            isFinal: false,
+            onNext: () => ShowRelicChoices(),
+            onRetry: () =>
+            {
+                ResetRun();
+                StartStage();
+            }
+        );
+    }
+
+    void ShowRelicChoices()
+    {
+        CurrentStage++;
+
+        if (CurrentStage > maxStage)
+        {
+            ShowFinalResult();
+            return;
+        }
+
+        var relics = relicSystem.RollRelics(3);
+
+        relicController.Show(
+            relics,
+            relic =>
+            {
+                relicSystem.AddRelic(relic);
+                RefreshRelicHUD();
+
+                goal = Mathf.RoundToInt(goal * 1.35f + 200);
+                stageTime = Mathf.Max(60f, stageTime - 5f);
+                StartStage();
+            }
         );
     }
 
@@ -510,6 +478,7 @@ public class GameManager : MonoBehaviour
     {
         if (relicHUDController == null || relicSystem == null)
             return;
+
         relicHUDController.Refresh(relicSystem.GetAllOwnedCounts());
     }
 
@@ -522,14 +491,13 @@ public class GameManager : MonoBehaviour
         resultController.Show(
             true,
             CurrentStage,
+            isFinal: true,
             onNext: () =>
             {
-                // 例：メニューに戻す
                 SceneLoader.LoadMenu();
             },
             onRetry: () =>
             {
-                // 最初からやり直す
                 ResetRun();
                 StartStage();
             }
@@ -538,34 +506,22 @@ public class GameManager : MonoBehaviour
 
     void ResetRun()
     {
-        // ステージ進行（もし使ってるなら）
         CurrentStage = 1;
 
-        // ゴール/制限時間を初期に戻す
         goal = initialGoal;
         stageTime = initialStageTime;
 
-        // ★デッキを初期に戻す（参照を戻すだけでOK）
+        // デッキを初期に戻す
         startingDeck.Clear();
         startingDeck.AddRange(initialDeckSnapshot);
 
-        // ★建物の「強化された scorePerSec」を初期値に戻す
-        foreach (var def in buildingDefs)
-        {
-            if (def == null)
-                continue;
-            if (initialBuildingSps.TryGetValue(def.id, out var sps))
-                def.scorePerSec = sps;
-        }
-
-        // ★建物システムを初期化（builtCount/activeCount/totalBuiltCountリセット）
-        buildings = new BuildingSystem();
-
-        // ★レリック初期化
+        // レリック初期化
         relicSystem.ResetRelics();
+        shopSystem.ResetRun();
 
-        // ついで：モーダル状態も初期化
+        // モーダル状態も初期化
         modalGuard.ForceReset();
+
 
         Debug.Log("[Run] ResetRun done.");
     }
@@ -576,19 +532,15 @@ public class GameManager : MonoBehaviour
         yield return "ステージ10をクリアするとゲームクリア！";
         yield return "時間切れになるとゲームオーバーだよ。";
         yield return "目標スコアを達成してステージを突破しよう！";
-        yield return "スコアは施設とカードで増えていくよ。";
-        yield return "同じ施設をたくさん建てると建設コストが上がるぞ。";
+        yield return "スコアはカードで増えていくよ。";
         yield return "カードは使うと捨て札に行くよ。";
         yield return "山札がなくなると捨て札がシャッフルされるよ。";
         yield return "手札が上限を超えるとカードは引けないよ。";
         yield return "強化されたカードはデッキに永続的に残る！";
         yield return "消滅したカードは次のステージで復活するぞ！";
         yield return "カード効果は順番にすべて発動するよ。";
-        yield return "DPSは Drink Per Second の略だよ！";
-        yield return "建物は毎秒スコアを生み出すぞ。";
-        yield return "建物を10個建てるとカードのアップグレードが発生！";
-        yield return "ステージをまたいでも建物は引き継がれるよ。";
-        yield return "建物は10個建てるごとに性能が強化されるぞ！";
+        yield return "アップグレードボタンでカードを強化できるぞ！";
+        yield return "強化でとんでもないコンボが生まれるかも！？";
     }
 
     void SendUnityroomScore(int finalScore)
@@ -597,12 +549,10 @@ public class GameManager : MonoBehaviour
         if (!sendScoreToUnityroom)
             return;
 
-        // unityroom用
-        // using unityroom.Api; が必要
         UnityroomApiClient.Instance.SendScore(
             unityroomBoardNo,
             (float)finalScore,
-            ScoreboardWriteMode.HighScoreDesc // 例：ハイスコア（降順）
+            ScoreboardWriteMode.HighScoreDesc
         );
 #else
         Debug.Log($"[unityroom] (dry-run) SendScore board={unityroomBoardNo} score={finalScore}");

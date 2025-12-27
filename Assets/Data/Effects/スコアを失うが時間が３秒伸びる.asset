@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af4c390f91c22a544a7dbc1905c87d76, type: 3}
-  m_Name: "\u30B9\u30B3\u30A2\u3092\u5931\u3046\u304C\u6642\u9593\u304C\uFF11\u79D2\u4F38\u3073\u308B"
+  m_Name: "\u30B9\u30B3\u30A2\u3092\u5931\u3046\u304C\u6642\u9593\u304C\uFF13\u79D2\u4F38\u3073\u308B"
   m_EditorClassIdentifier: Assembly-CSharp::AllInAddTimeEffect
-  addSeconds: 1
+  addSeconds: 3

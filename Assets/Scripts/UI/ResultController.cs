@@ -5,85 +5,61 @@ using UnityEngine.UI;
 
 public class ResultController : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject resultModal;
+    [SerializeField] private GameObject resultModal;
 
     [Header("UI")]
-    [SerializeField]
-    private CanvasGroup canvasGroup; // ★追加（全体フェード用）
+    [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private Text resultText;
+    [SerializeField] private RectTransform resultTextRect;
+    [SerializeField] private CanvasGroup buttonsGroup;
+    [SerializeField] private Button nextButton;
+    [SerializeField] private Button retryButton;
 
-    [SerializeField]
-    private Text resultText;
+    [Header("Art")]
+    [SerializeField] private Image resultArtImage;
+    [SerializeField] private Sprite clearArt;
+    [SerializeField] private Sprite gameOverArt;
 
-    [SerializeField]
-    private RectTransform resultTextRect; // ★追加（ポップ用）
+    [Header("Optional Final Art")]
+    [SerializeField] private Sprite finalClearArt; // ★最終クリア用（未設定ならclearArtを使う）
 
-    [SerializeField]
-    private CanvasGroup buttonsGroup; // ★追加（ボタンフェード用）
-
-    [SerializeField]
-    private Button nextButton;
-
-    [SerializeField]
-    private Button retryButton;
-
-    [SerializeField]
-    private Image resultArtImage; // ★追加：表示先
-
-    [SerializeField]
-    private Sprite clearArt; // ★追加：クリア用イラスト
-
-    [SerializeField]
-    private Sprite gameOverArt; // ★追加：ゲームオーバー用イラスト
-
-    [SerializeField]
-    private CanvasGroup artCanvasGroup; // ★任意：フェード用
-
-    [SerializeField]
-    private RectTransform artRect; // ★任意：ポップ用
+    [Header("Optional Art Anim")]
+    [SerializeField] private CanvasGroup artCanvasGroup;
+    [SerializeField] private RectTransform artRect;
 
     [Header("Anim")]
-    [SerializeField]
-    private float fadeDuration = 0.18f;
-
-    [SerializeField]
-    private float popDuration = 0.22f;
-
-    [SerializeField]
-    private float popScale = 1.18f;
+    [SerializeField] private float fadeDuration = 0.18f;
+    [SerializeField] private float popDuration = 0.22f;
+    [SerializeField] private float popScale = 1.18f;
 
     private ModalGuard modal;
     private Tween seqTween;
 
     public bool IsOpen => resultModal != null && resultModal.activeInHierarchy;
 
-    public void Init(ModalGuard modal)
-    {
-        this.modal = modal;
-    }
+    public void Init(ModalGuard modal) => this.modal = modal;
 
-    public void Show(bool cleared, int currentstage,Action onNext, Action onRetry)
+    // ★変更：isFinal を追加
+    public void Show(bool cleared, int currentstage, bool isFinal, Action onNext, Action onRetry)
     {
         modal?.Lock();
 
         resultModal.SetActive(true);
         resultModal.transform.SetAsLastSibling();
 
-        // 文言
-        resultText.text = cleared ? $"STAGE {currentstage} CLEAR!" : "GAME OVER";
-        if (resultArtImage != null)
-        {
-            resultArtImage.sprite = cleared ? clearArt : gameOverArt;
-            resultArtImage.enabled = resultArtImage.sprite != null;
-        }
+        // ---- 文言 & アート ----
+        ApplyHeaderAndArt(cleared, currentstage, isFinal);
 
-        // （任意）演出の初期化
+        // ---- 初期化 ----
         PrepareArtVisual();
+        PrepareVisuals();
 
-        // （任意）演出開始
-        PlayArtAnimation(cleared);
+        // ---- 演出 ----
+        PlayArtAnimation(cleared, isFinal);
+        PlayAnimation(cleared, isFinal);
 
-        // ボタン表示
+        // ---- ボタン表示 ----
+        // クリア時は Next を出す（最終もNext＝メニューへ等に使える）
         nextButton.gameObject.SetActive(cleared);
         retryButton.gameObject.SetActive(true);
 
@@ -95,11 +71,7 @@ public class ResultController : MonoBehaviour
             buttonsGroup.blocksRaycasts = false;
         }
 
-        // 初期化（演出）
-        PrepareVisuals();
-        PlayAnimation(cleared);
-
-        // クリック
+        // ---- クリック ----
         nextButton.onClick.RemoveAllListeners();
         retryButton.onClick.RemoveAllListeners();
 
@@ -119,18 +91,43 @@ public class ResultController : MonoBehaviour
         });
     }
 
+    private void ApplyHeaderAndArt(bool cleared, int currentstage, bool isFinal)
+    {
+        // 文言
+        if (!cleared)
+        {
+            resultText.text = "GAME OVER";
+        }
+        else
+        {
+            resultText.text = isFinal ? "GAME CLEAR!" : $"STAGE {currentstage} CLEAR!";
+        }
+
+        // アート
+        if (resultArtImage != null)
+        {
+            if (!cleared)
+            {
+                resultArtImage.sprite = gameOverArt;
+            }
+            else
+            {
+                // 最終用があればそれ、なければ通常クリア絵
+                var s = isFinal && finalClearArt != null ? finalClearArt : clearArt;
+                resultArtImage.sprite = s;
+            }
+
+            resultArtImage.enabled = resultArtImage.sprite != null;
+        }
+    }
+
     private void PrepareVisuals()
     {
-        // Tween残りを消す
         seqTween?.Kill();
-        if (resultTextRect != null)
-            resultTextRect.DOKill();
-        if (canvasGroup != null)
-            canvasGroup.DOKill();
-        if (buttonsGroup != null)
-            buttonsGroup.DOKill();
+        if (resultTextRect != null) resultTextRect.DOKill();
+        if (canvasGroup != null) canvasGroup.DOKill();
+        if (buttonsGroup != null) buttonsGroup.DOKill();
 
-        // 全体フェード初期値
         if (canvasGroup != null)
         {
             canvasGroup.alpha = 0f;
@@ -138,7 +135,6 @@ public class ResultController : MonoBehaviour
             canvasGroup.blocksRaycasts = true;
         }
 
-        // テキスト初期値
         if (resultTextRect != null)
         {
             resultTextRect.localScale = Vector3.one * 0.85f;
@@ -147,27 +143,29 @@ public class ResultController : MonoBehaviour
                 resultTextRect.anchoredPosition.y - 20f
             );
         }
+
         if (resultText != null)
+        {
             resultText.color = new Color(
                 resultText.color.r,
                 resultText.color.g,
                 resultText.color.b,
                 0f
             );
+        }
     }
 
-    private void PlayAnimation(bool cleared)
+    private void PlayAnimation(bool cleared, bool isFinal)
     {
-        // SE/BGM もここで鳴らすなら
-        AudioManager.Instance?.PlaySE(cleared ? SEType.StageClear : SEType.GameOver);
+        // SE：最終クリアは専用SEが無ければ StageClear を流用
+        var se = !cleared ? SEType.GameOver : SEType.StageClear;
+        AudioManager.Instance?.PlaySE(se);
 
         var seq = DOTween.Sequence().SetUpdate(true);
 
-        // 全体フェードイン
         if (canvasGroup != null)
             seq.Append(canvasGroup.DOFade(1f, fadeDuration));
 
-        // テキスト：移動 + フェード + ポップ
         if (resultTextRect != null)
         {
             seq.Join(
@@ -185,12 +183,15 @@ public class ResultController : MonoBehaviour
         // ちょいキラ/揺れ（クリア時だけ）
         if (cleared && resultTextRect != null)
         {
+            // 最終は少し派手にしてもOK（ここは好み）
+            float punch = isFinal ? 6f : 4f;
             seq.Append(
-                resultTextRect.DOPunchRotation(new Vector3(0, 0, 4f), 0.22f, 10, 1f).SetUpdate(true)
+                resultTextRect
+                    .DOPunchRotation(new Vector3(0, 0, punch), 0.24f, 10, 1f)
+                    .SetUpdate(true)
             );
         }
 
-        // ボタン表示
         seq.AppendInterval(0.05f);
         if (buttonsGroup != null)
         {
@@ -207,7 +208,6 @@ public class ResultController : MonoBehaviour
 
     public void Hide()
     {
-        // 即閉じ（演出で閉じたいならここもTweenにできる）
         seqTween?.Kill();
         resultModal.SetActive(false);
         modal?.Unlock();
@@ -228,16 +228,19 @@ public class ResultController : MonoBehaviour
         }
     }
 
-    private void PlayArtAnimation(bool cleared)
+    private void PlayArtAnimation(bool cleared, bool isFinal)
     {
-        // timeScale=0でも動かす
         if (artCanvasGroup != null)
             artCanvasGroup.DOFade(1f, 0.18f).SetUpdate(true);
 
         if (artRect != null)
         {
-            // クリアはちょい派手、ゲームオーバーは控えめ
-            float scale = cleared ? 1.05f : 1.02f;
+            // 最終はちょい派手に
+            float scale =
+                !cleared ? 1.02f :
+                isFinal ? 1.08f :
+                1.05f;
+
             artRect.DOScale(scale, 0.18f).SetEase(Ease.OutBack).SetUpdate(true);
             artRect.DOScale(1f, 0.10f).SetEase(Ease.OutQuad).SetUpdate(true).SetDelay(0.18f);
         }
