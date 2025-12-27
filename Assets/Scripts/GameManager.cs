@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using UnityEngine;
 using unityroom.Api;
 
@@ -348,6 +349,7 @@ public class GameManager : MonoBehaviour
         if (!ctx.ExhaustThisCard)
             deck.Discard(card);
 
+        AudioManager.Instance?.PlaySE(SEType.CardPlay);
         handController.Render(hand, PlayCard);
     }
 
@@ -360,6 +362,7 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance?.PlaySE(cleared ? SEType.StageClear : SEType.GameOver);
         resultController.Show(
             cleared,
+            CurrentStage,
             onNext: () => ShowRelicChoices(),
             onRetry: () =>
             {
@@ -516,6 +519,7 @@ public class GameManager : MonoBehaviour
 
         resultController.Show(
             true,
+            CurrentStage,
             onNext: () =>
             {
                 // 例：メニューに戻す
@@ -566,7 +570,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerable<string> BuildTickerMessages()
     {
-        yield return "現在ステージ {stage} です。";
+        yield return $"現在ステージ {CurrentStage} です。";
         yield return "ステージ10をクリアするとゲームクリア！";
         yield return "時間切れになるとゲームオーバーだよ。";
         yield return "目標スコアを達成してステージを突破しよう！";

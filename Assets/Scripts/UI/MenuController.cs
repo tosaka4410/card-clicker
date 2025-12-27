@@ -6,6 +6,9 @@ public class MenuController : MonoBehaviour
     [SerializeField] private Button startButton;
     [SerializeField] private Button tutorialButton;
     [SerializeField] private Button quitButton;
+    [SerializeField] private SettingsUI settingsUI;
+    private readonly ModalGuard modalGuard = new();
+    public ModalGuard ModalGuard => modalGuard;
 
     void Start()
     {
@@ -17,6 +20,8 @@ public class MenuController : MonoBehaviour
 
         if (quitButton != null)
             quitButton.onClick.AddListener(SceneLoader.Quit);
+
+        settingsUI?.Init(modalGuard);
         
         AudioManager.Instance?.PlayBGM(BGMType.Menu);
         

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a650283a12381374b8db9cad91cfe8bc, type: 3}
   m_Name: SoPowerUp
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
-  relicName: 
-  description: 
+  relicName: "\u934B"
+  description: "\u8607\u306E\u30B9\u30B3\u30A2\u304C\uFF12\u500D\u306B\u306A\u308B\u3002"
   type: 5
   value: 2
-  icon: {fileID: 0}
+  icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   targetBuildingId: "\u8607"
