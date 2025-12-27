@@ -1906,6 +1906,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 911750bd81ffb204190ac559f8dc11c1, type: 2}
   - {fileID: 11400000, guid: ab5cd07a0e89a004db9938bd5f47207d, type: 2}
   - {fileID: 11400000, guid: 43f4c67bcd966124fa276bc7de2be9ad, type: 2}
+  - {fileID: 11400000, guid: a38d477c4c56210428a4c10f00c1481a, type: 2}
   itemCount: 3
   baseOpenCost: 80
   openCostRate: 1.25
@@ -5373,11 +5374,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c59976ffb7dc46948ac64d4c32e8a2c4, type: 2}
   - {fileID: 11400000, guid: 1617965b9d9412349901ea1ce83bc86c, type: 2}
   - {fileID: 11400000, guid: bad061489c3a15d468cf7462fe5e0597, type: 2}
+  - {fileID: 11400000, guid: b378a3c5bb8c1934aa007daf621ff4a6, type: 2}
   upgradePool:
   - {fileID: 11400000, guid: 85c229b2094d7eb46a485f59e6b4a81b, type: 2}
   - {fileID: 11400000, guid: ec688dba3d580d14cb3c25abf0d698f8, type: 2}
   - {fileID: 11400000, guid: 9346df406ac6a5e4e9cb581a1db80a9b, type: 2}
   - {fileID: 11400000, guid: 736effecb9d06b44e97485a5cf8dc7bc, type: 2}
+  - {fileID: 11400000, guid: 27a2ef0622d2533419bae861dfb4559d, type: 2}
 --- !u!4 &1412321703
 Transform:
   m_ObjectHideFlags: 0

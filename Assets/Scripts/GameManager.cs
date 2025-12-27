@@ -579,4 +579,6 @@ public class GameManager : MonoBehaviour
         tempScoreMultiplier *= multiplier;
         tempScoreTimer = Mathf.Max(tempScoreTimer, duration);
     }
+    public int GetScore() => score;
+
 }

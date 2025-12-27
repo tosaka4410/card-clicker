@@ -28,4 +28,6 @@ public class GameContext
     {
         gm.AddTempScoreMultiplier(multiplier, duration);
     }
+    public int GetScore() => gm.GetScore();
+
 }
