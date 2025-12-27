@@ -78,6 +78,10 @@ public class GameManager : MonoBehaviour
     // ---- upgrade button ----
     private int totalUpgradeCount = 0;
 
+    // 一時バフ管理
+    private float tempScoreMultiplier = 1f;
+    private float tempScoreTimer = 0f;
+
     private readonly ModalGuard modalGuard = new();
     public ModalGuard ModalGuard => modalGuard;
 
@@ -168,6 +172,17 @@ public class GameManager : MonoBehaviour
             timeLeft = 0f;
             EndStage(score >= goal);
         }
+
+        // 一時スコアバフの減衰
+        if (tempScoreTimer > 0f)
+        {
+            tempScoreTimer -= Time.deltaTime;
+            if (tempScoreTimer <= 0f)
+            {
+                tempScoreMultiplier = 1f;
+                tempScoreTimer = 0f;
+            }
+        }
     }
 
     void StartStage()
@@ -240,6 +255,7 @@ public class GameManager : MonoBehaviour
         {
             mul *= relicSystem.CardScoreMultiplier;
         }
+        mul *= tempScoreMultiplier;
 
         int v = Mathf.RoundToInt(amount * mul);
         score += Mathf.Max(0, v);
@@ -522,14 +538,13 @@ public class GameManager : MonoBehaviour
         // モーダル状態も初期化
         modalGuard.ForceReset();
 
-
         Debug.Log("[Run] ResetRun done.");
     }
 
     IEnumerable<string> BuildTickerMessages()
     {
         yield return $"現在ステージ {CurrentStage} です。";
-        yield return "ステージ10をクリアするとゲームクリア！";
+        yield return "ステージ３をクリアするとゲームクリア！";
         yield return "時間切れになるとゲームオーバーだよ。";
         yield return "目標スコアを達成してステージを突破しよう！";
         yield return "スコアはカードで増えていくよ。";
@@ -557,5 +572,11 @@ public class GameManager : MonoBehaviour
 #else
         Debug.Log($"[unityroom] (dry-run) SendScore board={unityroomBoardNo} score={finalScore}");
 #endif
+    }
+
+    public void AddTempScoreMultiplier(float multiplier, float duration)
+    {
+        tempScoreMultiplier *= multiplier;
+        tempScoreTimer = Mathf.Max(tempScoreTimer, duration);
     }
 }

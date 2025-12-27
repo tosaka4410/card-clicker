@@ -1297,8 +1297,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.0830078, y: -39.458}
-  m_SizeDelta: {x: -41.1547, y: -117.9}
+  m_AnchoredPosition: {x: -3.8302917, y: -26.843994}
+  m_SizeDelta: {x: -162.0345, y: -194.32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &356235594
 MonoBehaviour:
@@ -1905,6 +1905,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 599d0149cd80d1e4397e9c6459dbb6fe, type: 2}
   - {fileID: 11400000, guid: 911750bd81ffb204190ac559f8dc11c1, type: 2}
   - {fileID: 11400000, guid: ab5cd07a0e89a004db9938bd5f47207d, type: 2}
+  - {fileID: 11400000, guid: 43f4c67bcd966124fa276bc7de2be9ad, type: 2}
   itemCount: 3
   baseOpenCost: 80
   openCostRate: 1.25
@@ -2281,7 +2282,7 @@ MonoBehaviour:
   upgradeButtonController: {fileID: 77882265}
   upgradeButtonBaseCost: 250
   upgradeButtonCostRate: 1.35
-  maxStage: 10
+  maxStage: 3
   unityroomBoardNo: 1
   sendScoreToUnityroom: 1
 --- !u!4 &578031465
@@ -4339,8 +4340,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.0830078, y: 3.1945953}
-  m_SizeDelta: {x: -41.1547, y: -203.2052}
+  m_AnchoredPosition: {x: -1.7698059, y: -9.603607}
+  m_SizeDelta: {x: -155.1663, y: -228.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1002709783
 MonoBehaviour:
@@ -5573,6 +5574,7 @@ MonoBehaviour:
   resultArtImage: {fileID: 1623516959}
   clearArt: {fileID: 21300000, guid: 2fe20ae256732154a81761cbe386ffa0, type: 3}
   gameOverArt: {fileID: 21300000, guid: fac1738623301d143a1f1ed2ccab5670, type: 3}
+  finalClearArt: {fileID: 0}
   artCanvasGroup: {fileID: 1623516961}
   artRect: {fileID: 1623516958}
   fadeDuration: 0.18
@@ -8491,7 +8493,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RelicSystem
   relicPool:
-  - {fileID: 11400000, guid: 588b1aab7054f054b82212733e93a3a6, type: 2}
   - {fileID: 11400000, guid: 50859e22214ad2540a3e547c28e238ad, type: 2}
   - {fileID: 11400000, guid: 542710f24119a4b469a56fd1eb529af2, type: 2}
   - {fileID: 11400000, guid: 81ad359fb18167c47b16b0b9351eb7b8, type: 2}

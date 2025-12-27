@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ScoreMultiplier
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   relicName: "\u6247\u5B50"
-  description: "\u30AB\u30FC\u30C9\u3067\u5F97\u3089\u308C\u308B\u30B9\u30B3\u30A2\u304C100\uFF05\u4E0A\u6607"
+  description: "\u30AB\u30FC\u30C9\u3067\u5F97\u3089\u308C\u308B\u30B9\u30B3\u30A2\u304C20\uFF05\u4E0A\u6607"
   type: 4
-  value: 2
+  value: 1.2
   icon: {fileID: 1710981365271166214, guid: b553ab822e77ab541a12cb1778757ab7, type: 3}
   targetBuildingId: 
