@@ -39,7 +39,6 @@ public class ShopController : MonoBehaviour
         int cost = shopSystem.GetOpenCost();
         long score = getScore?.Invoke() ?? 0;
         bool ok = !modal.IsLocked && score >= cost;
-        Debug.Log(ok);
 
         openShopButton.interactable = ok;
 

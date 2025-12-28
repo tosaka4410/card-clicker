@@ -208,11 +208,11 @@ public class GameManager : MonoBehaviour
     {
         modalGuard.ForceReset();
         modalGuard.Lock();
+        ended = false;
 
         AudioManager.Instance?.PlayBGM(BGMType.Stage);
         RefreshRelicHUD();
 
-        ended = false;
 
         isStarting = true;
         countdownController?.PlayStartCountdown(
@@ -344,6 +344,10 @@ public class GameManager : MonoBehaviour
     void PlayCard(CardData card)
     {
         if (ended)
+            return;
+        if (modalGuard.IsLocked)
+            return;
+        if(isStarting)
             return;
 
         long before = score;
@@ -535,7 +539,7 @@ public class GameManager : MonoBehaviour
     {
         ended = true;
 
-        SendUnityroomScore((int)MathF.Min(score, int.MaxValue));
+        SendUnityroomScore(score);
         MenuInfoController.SaveScores(score);
 
 
@@ -601,15 +605,15 @@ public class GameManager : MonoBehaviour
         yield return "ショップでしか手に入らない効果もあるよ！";
     }
 
-    void SendUnityroomScore(int finalScore)
+    void SendUnityroomScore(long finalScore)
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         if (!sendScoreToUnityroom)
             return;
-
+        float sendScore = finalScore / 1000f;
         UnityroomApiClient.Instance.SendScore(
             unityroomBoardNo,
-            (float)finalScore,
+            sendScore,
             ScoreboardWriteMode.HighScoreDesc
         );
 #else
