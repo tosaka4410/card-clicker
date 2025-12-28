@@ -2269,7 +2269,7 @@ MonoBehaviour:
   relicSystem: {fileID: 2109147158}
   hudController: {fileID: 788608801}
   handController: {fileID: 103120795}
-  shopController: {fileID: 1817278379}
+  shopController: {fileID: 2084398169}
   upgradeController: {fileID: 105097436}
   relicController: {fileID: 571128056}
   deckViewController: {fileID: 1745528326}
@@ -6967,7 +6967,6 @@ GameObject:
   - component: {fileID: 1817278376}
   - component: {fileID: 1817278378}
   - component: {fileID: 1817278377}
-  - component: {fileID: 1817278379}
   m_Layer: 5
   m_Name: ShopModal
   m_TagString: Untagged
@@ -7035,24 +7034,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1817278375}
   m_CullTransparentMesh: 1
---- !u!114 &1817278379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1817278375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c2b3c852f47c0a4194d76178dfc64c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShopController
-  shopModal: {fileID: 1817278375}
-  shopItemsRoot: {fileID: 2139246758}
-  shopItemButtonPrefab: {fileID: 4784671297119970131, guid: d16195f4b5a37e34caffd8e6b0b3f7c5, type: 3}
-  openCostText: {fileID: 1646957685}
-  openShopButton: {fileID: 2084398166}
-  closeShopButton: {fileID: 1327821113}
 --- !u!1 &1819243572
 GameObject:
   m_ObjectHideFlags: 0
@@ -8424,6 +8405,7 @@ GameObject:
   - component: {fileID: 2084398166}
   - component: {fileID: 2084398167}
   - component: {fileID: 2084398168}
+  - component: {fileID: 2084398169}
   m_Layer: 5
   m_Name: ShopButton
   m_TagString: Untagged
@@ -8567,6 +8549,24 @@ MonoBehaviour:
   duration: 0.12
   easeIn: 27
   easeOut: 6
+--- !u!114 &2084398169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084398162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c2b3c852f47c0a4194d76178dfc64c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopController
+  shopModal: {fileID: 1817278375}
+  shopItemsRoot: {fileID: 2139246758}
+  shopItemButtonPrefab: {fileID: 4784671297119970131, guid: d16195f4b5a37e34caffd8e6b0b3f7c5, type: 3}
+  openCostText: {fileID: 1646957685}
+  openShopButton: {fileID: 2084398166}
+  closeShopButton: {fileID: 1327821113}
 --- !u!1 &2108041183
 GameObject:
   m_ObjectHideFlags: 0
