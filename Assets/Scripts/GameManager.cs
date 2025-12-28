@@ -347,6 +347,8 @@ public class GameManager : MonoBehaviour
 
         var actor = (card.kind == CardKind.Cow) ? Actor.CowGirl : Actor.DogGirl;
         portraitController.React(card, actor);
+        
+        hand.Remove(card);
 
         ctx.Multiplier = 1;
         ctx.ExhaustThisCard = false;
@@ -362,7 +364,6 @@ public class GameManager : MonoBehaviour
         if (gained > 0)
             scorePopupSpawner?.Show(gained);
 
-        hand.Remove(card);
 
         if (!ctx.ExhaustThisCard)
             deck.Discard(card);

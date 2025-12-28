@@ -318,7 +318,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -276.99503, y: 46}
+  m_AnchoredPosition: {x: -276.99503, y: 100}
   m_SizeDelta: {x: 385.6336, y: 595.7416}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &73639309
@@ -799,7 +799,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 111.64328, y: 46.000008}
+  m_AnchoredPosition: {x: 111.64328, y: 100.00001}
   m_SizeDelta: {x: 385.63354, y: 595.7416}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &164487781
@@ -2249,7 +2249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   stageTime: 60
-  goal: 500
+  goal: 300
   drawInterval: 5
   startingHand: 3
   handLimit: 5
@@ -2282,7 +2282,7 @@ MonoBehaviour:
   tickerController: {fileID: 1629778873}
   scorePopupSpawner: {fileID: 1278455164}
   upgradeButtonController: {fileID: 77882265}
-  upgradeButtonBaseCost: 250
+  upgradeButtonBaseCost: 100
   upgradeButtonCostRate: 1.35
   maxStage: 3
   unityroomBoardNo: 1

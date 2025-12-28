@@ -9,9 +9,9 @@ public class ShopSystem : MonoBehaviour
     public int itemCount = 3;
 
     [Header("Shop Open Cost")]
-    public int baseOpenCost = 80;      // ★開く基本コスト
+    public int baseOpenCost = 80; // ★開く基本コスト
     public float openCostRate = 1.25f; // ★開くたびに上がる倍率（固定なら 1.0）
-    public int totalOpenCount = 0;     // ★累計で何回開いたか（ラン中持ち越し）
+    public int totalOpenCount = 0; // ★累計で何回開いたか（ラン中持ち越し）
 
     private readonly List<ShopItem> currentItems = new();
     public IReadOnlyList<ShopItem> CurrentItems => currentItems;
@@ -33,17 +33,28 @@ public class ShopSystem : MonoBehaviour
         currentItems.Clear();
     }
 
-    public void GenerateLineup()
+public void GenerateLineup()
+{
+    currentItems.Clear();
+
+    if (cardPool == null || cardPool.Count == 0)
+        return;
+
+    var candidates = new List<CardData>(cardPool);
+    int count = Mathf.Min(itemCount, candidates.Count);
+
+    for (int i = 0; i < count; i++)
     {
-        currentItems.Clear();
-        if (cardPool.Count == 0) return;
+        int index = Random.Range(0, candidates.Count);
+        var card = candidates[index];
 
-        for (int i = 0; i < itemCount; i++)
+        currentItems.Add(new ShopItem
         {
-            var card = cardPool[Random.Range(0, cardPool.Count)];
+            card = card
+        });
 
-            // ★購入は無料にするので cost は 0 でOK（表示したくないならUI側でも空表示に）
-            currentItems.Add(new ShopItem { card = card, cost = 0 });
-        }
+        candidates.RemoveAt(index); // ★重複防止
     }
+}
+
 }
