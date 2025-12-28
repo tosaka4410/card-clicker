@@ -11,6 +11,7 @@ public enum SEType
     Error,
     StageClear,
     GameOver,
+    StageStart,
 }
 
 public enum BGMType

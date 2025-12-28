@@ -1,4 +1,5 @@
 // Assets/Scripts/GameManager.cs
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using unityroom.Api;
@@ -34,6 +35,9 @@ public class GameManager : MonoBehaviour
     public HandKeyInput handKeyInput;
     public PortraitController portraitController;
     public RelicHUDController relicHUDController;
+
+    [SerializeField]
+    private CountdownController countdownController;
 
     [SerializeField]
     private TickerController tickerController;
@@ -85,6 +89,10 @@ public class GameManager : MonoBehaviour
     private readonly ModalGuard modalGuard = new();
     public ModalGuard ModalGuard => modalGuard;
 
+    private bool isStarting = true;
+    private float startCountdownTime = 4f;
+    private bool startCountdownSePlayed = false;
+
     private readonly DeckSystem deck = new();
     private readonly List<CardData> hand = new();
 
@@ -135,6 +143,11 @@ public class GameManager : MonoBehaviour
         if (ended)
             return;
 
+        if (isStarting)
+        {
+            return;
+        }
+
         // timers
         timeLeft -= Time.deltaTime;
         drawTimer += Time.deltaTime;
@@ -183,6 +196,11 @@ public class GameManager : MonoBehaviour
                 tempScoreTimer = 0f;
             }
         }
+        if (countdownController != null)
+        {
+            bool isGoalMet = score >= goal;
+            countdownController.UpdateTime(timeLeft, isGoalMet);
+        }
     }
 
     void StartStage()
@@ -194,9 +212,16 @@ public class GameManager : MonoBehaviour
 
         ended = false;
 
+        isStarting = true;
+        countdownController?.PlayStartCountdown(
+            on3: () => AudioManager.Instance?.PlaySE(SEType.StageStart),
+            on2: null,
+            on1: null
+        );
+        StartCoroutine(CoStartUnlock());
+
         timeLeft = stageTime + relicSystem.TimeBonus;
         drawTimer = 0f;
-        score = 0;
 
         // 測定用もリセット（好み）
         scoreMeasureTimer = 0f;
@@ -230,6 +255,9 @@ public class GameManager : MonoBehaviour
             deck.DiscardCount
         );
         handController.Render(hand, PlayCard);
+
+        // ショップの開放コスト更新
+        shopController.RefreshOpenCostUI();
     }
 
     bool CanPlayCardByKey()
@@ -379,6 +407,8 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance?.PlaySE(SEType.Buy);
 
         ShowUpgradeChoicesFromButton();
+
+        shopController.RefreshOpenCostUI();
     }
 
     void ShowUpgradeChoicesFromButton()
@@ -483,7 +513,8 @@ public class GameManager : MonoBehaviour
                 relicSystem.AddRelic(relic);
                 RefreshRelicHUD();
 
-                goal = Mathf.RoundToInt(goal * 1.35f + 200);
+                // goal = Mathf.RoundToInt(goal * 1.35f + 200);
+                goal = GetGoalForStage(CurrentStage);
                 stageTime = Mathf.Max(60f, stageTime - 5f);
                 StartStage();
             }
@@ -533,10 +564,18 @@ public class GameManager : MonoBehaviour
 
         // レリック初期化
         relicSystem.ResetRelics();
+
+        // アップグレード初期化
+        totalUpgradeCount = 0;
+
+        // ショップ初期化
         shopSystem.ResetRun();
 
         // モーダル状態も初期化
         modalGuard.ForceReset();
+
+        // スコアリセット
+        score = 0;
 
         Debug.Log("[Run] ResetRun done.");
     }
@@ -579,6 +618,26 @@ public class GameManager : MonoBehaviour
         tempScoreMultiplier *= multiplier;
         tempScoreTimer = Mathf.Max(tempScoreTimer, duration);
     }
+
     public int GetScore() => score;
 
+    private IEnumerator CoStartUnlock()
+    {
+        // 3秒 + START表示0.35秒 と同じにしておく（上の実装と合わせる）
+        yield return new WaitForSecondsRealtime(3f + 0.35f);
+        isStarting = false;
+    }
+
+    private int GetGoalForStage(int stage)
+    {
+        // デフォルトは今のgoal（成長式を使いたいならここに入れる）
+        int g = goal;
+
+        if (stage == 2)
+            return 1000;
+        if (stage == 3)
+            return 10000;
+
+        return g;
+    }
 }
