@@ -14,7 +14,7 @@ public class GameContext
     // ★追加：一時スコア倍率
     public float TempScoreMultiplier { get; set; } = 1f;
 
-    public void AddScore(int amount) => gm.AddScore(amount, ScoreSource.Card);
+    public void AddScore(long amount) => gm.AddScore(amount, ScoreSource.Card);
 
     public bool TryPayScore(int amount) => gm.TryPayScore(amount);
 
@@ -22,12 +22,12 @@ public class GameContext
 
     public void AddTime(float seconds) => gm.AddTime(seconds);
 
-    public int ConsumeAllScore() => gm.ConsumeAllScore();
+    public long ConsumeAllScore() => gm.ConsumeAllScore();
 
     public void AddTempScoreMultiplier(float multiplier, float duration)
     {
         gm.AddTempScoreMultiplier(multiplier, duration);
     }
-    public int GetScore() => gm.GetScore();
+    public long GetScore() => gm.GetScore();
 
 }

@@ -7,7 +7,7 @@ public class AllInAddTimeEffect : CardEffect
 
     public override void Apply(GameContext ctx)
     {
-        int lost = ctx.ConsumeAllScore();
+        long lost = ctx.ConsumeAllScore();
 
 
         if (lost < 0)

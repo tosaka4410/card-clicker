@@ -1,4 +1,5 @@
 // Assets/Scripts/GameManager.cs
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -65,7 +66,7 @@ public class GameManager : MonoBehaviour
     // state
     private float timeLeft;
     private float drawTimer;
-    private int score;
+    private long score;
 
     private bool ended;
 
@@ -76,8 +77,8 @@ public class GameManager : MonoBehaviour
 
     // ---- score per second (measured) ----
     private float scoreMeasureTimer = 0f;
-    private int scoreAccumulatedThisSecond = 0;
-    private int lastMeasuredScorePerSec = 0;
+    private long scoreAccumulatedThisSecond = 0;
+    private long lastMeasuredScorePerSec = 0;
 
     // ---- upgrade button ----
     private int totalUpgradeCount = 0;
@@ -271,24 +272,27 @@ public class GameManager : MonoBehaviour
 
     // ---- score/time api (used by GameContext / effects) ----
 
-    public void AddScore(int amount, ScoreSource source = ScoreSource.Other)
+    public void AddScore(long amount, ScoreSource source = ScoreSource.Other)
     {
-        float mul = 1f;
+        double mul = 1.0;
 
         // 全体倍率
         mul *= relicSystem.ScoreMultiplier;
 
-        // カード由来だけ別倍率（施設依存倍率は廃止）
+        // カード由来だけ別倍率
         if (source == ScoreSource.Card)
-        {
             mul *= relicSystem.CardScoreMultiplier;
-        }
+
         mul *= tempScoreMultiplier;
 
-        int v = Mathf.RoundToInt(amount * mul);
-        score += Mathf.Max(0, v);
+        long v = (long)System.Math.Round(amount * mul);
 
+        if (v < 0)
+            v = 0;
+
+        score += v;
         scoreAccumulatedThisSecond += v;
+
         shopController.RefreshOpenCostUI();
     }
 
@@ -329,9 +333,9 @@ public class GameManager : MonoBehaviour
         timeLeft += seconds;
     }
 
-    public int ConsumeAllScore()
+    public long ConsumeAllScore()
     {
-        int lost = score;
+        long lost = score;
         score = 0;
         return lost;
     }
@@ -343,11 +347,11 @@ public class GameManager : MonoBehaviour
         if (ended)
             return;
 
-        int before = score;
+        long before = score;
 
         var actor = (card.kind == CardKind.Cow) ? Actor.CowGirl : Actor.DogGirl;
         portraitController.React(card, actor);
-        
+
         hand.Remove(card);
 
         ctx.Multiplier = 1;
@@ -360,10 +364,9 @@ public class GameManager : MonoBehaviour
             e.Apply(ctx);
         }
 
-        int gained = score - before;
+        long gained = score - before;
         if (gained > 0)
             scorePopupSpawner?.Show(gained);
-
 
         if (!ctx.ExhaustThisCard)
             deck.Discard(card);
@@ -422,7 +425,7 @@ public class GameManager : MonoBehaviour
             if (startingDeck.Count == 0)
                 continue;
 
-            var target = startingDeck[Random.Range(0, startingDeck.Count)];
+            var target = startingDeck[UnityEngine.Random.Range(0, startingDeck.Count)];
             choices.Add(new UpgradeChoice { upgrade = up, targetCard = target });
         }
 
@@ -534,7 +537,7 @@ public class GameManager : MonoBehaviour
     {
         ended = true;
 
-        SendUnityroomScore(score);
+        SendUnityroomScore((int)MathF.Min(score, int.MaxValue));
 
         resultController.Show(
             true,
@@ -620,7 +623,7 @@ public class GameManager : MonoBehaviour
         tempScoreTimer = Mathf.Max(tempScoreTimer, duration);
     }
 
-    public int GetScore() => score;
+    public long GetScore() => score;
 
     private IEnumerator CoStartUnlock()
     {

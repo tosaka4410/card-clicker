@@ -9,7 +9,7 @@ public class ScorePopupView : MonoBehaviour
 
     Tween tween;
 
-    public void Play(int amount, Vector3 startPos)
+    public void Play(long amount, Vector3 startPos)
     {
         if (text != null) text.text = $"+{amount}";
         if (canvasGroup != null) canvasGroup.alpha = 1f;

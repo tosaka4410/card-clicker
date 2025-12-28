@@ -9,14 +9,14 @@ public class UpgradeButtonController : MonoBehaviour
     [SerializeField] private Text usesText; // 任意
 
     private Func<int> getCost;
-    private Func<int> getScore;
+    private Func<long> getScore;
     private Func<bool> canUse;
     private Action onClick;
     private Func<int> getUses; // 任意（表示用）
 
     public void Init(
         Func<int> getCost,
-        Func<int> getScore,
+        Func<long> getScore,
         Func<bool> canUse,
         Action onClick,
         Func<int> getUses = null
@@ -40,7 +40,7 @@ public class UpgradeButtonController : MonoBehaviour
         if (button == null) return;
 
         int cost = getCost?.Invoke() ?? 0;
-        int score = getScore?.Invoke() ?? 0;
+        long score = getScore?.Invoke() ?? 0;
         bool ok = (canUse?.Invoke() ?? true) && score >= cost;
 
         button.interactable = ok;

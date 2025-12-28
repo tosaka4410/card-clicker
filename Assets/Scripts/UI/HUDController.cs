@@ -29,9 +29,9 @@ public class HUDController : MonoBehaviour
 
     public void Render(
         float timeLeft,
-        int score,
+        long score,
         int goal,
-        int scorePerSec,
+        long scorePerSec,
         IReadOnlyDictionary<RelicData, int> relicCounts,
         int deckCount,
         int discardCount

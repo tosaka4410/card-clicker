@@ -39,7 +39,7 @@ public class ScorePopupSpawner : MonoBehaviour
         return CreateOne();
     }
 
-    public void Show(int amount)
+    public void Show(long amount)
     {
         Debug.Log($"[Popup] Show called amount={amount}");
         if (amount <= 0)

@@ -26,7 +26,7 @@ public class ShopController : MonoBehaviour
     private ShopSystem shopSystem;
     private ModalGuard modal;
 
-    private Func<int> getScore;
+    private Func<long> getScore;
     private Func<int, bool> tryPay;
     private Action<CardData> onBuy;
 
@@ -42,7 +42,7 @@ public class ShopController : MonoBehaviour
     public void Init(
         ShopSystem shopSystem,
         ModalGuard modal,
-        Func<int> getScore,
+        Func<long> getScore,
         Func<int, bool> tryPay,
         Action<CardData> onBuy
     )

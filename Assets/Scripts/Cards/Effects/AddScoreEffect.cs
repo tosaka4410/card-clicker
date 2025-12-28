@@ -7,7 +7,7 @@ public class AddScoreEffect : CardEffect
 
     public override void Apply(GameContext ctx)
     {
-        int v = amount * Mathf.Max(1, ctx.Multiplier);
+        long v = amount * Mathf.Max(1, ctx.Multiplier);
         Debug.Log($"[Effect] AddScore {amount} x{ctx.Multiplier} => {v}");
         ctx.AddScore(v);
     }
