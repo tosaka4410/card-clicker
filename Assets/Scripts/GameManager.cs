@@ -257,9 +257,6 @@ public class GameManager : MonoBehaviour
             deck.DiscardCount
         );
         handController.Render(hand, PlayCard);
-
-        // ショップの開放コスト更新
-        shopController.RefreshOpenCostUI();
     }
 
     bool CanPlayCardByKey()
@@ -293,8 +290,6 @@ public class GameManager : MonoBehaviour
 
         score += v;
         scoreAccumulatedThisSecond += v;
-
-        shopController.RefreshOpenCostUI();
     }
 
     public bool TryPayScore(int amount)
@@ -304,7 +299,6 @@ public class GameManager : MonoBehaviour
 
         score -= amount;
 
-        shopController.RefreshOpenCostUI(); // ★追加
         return true;
     }
 
@@ -313,7 +307,6 @@ public class GameManager : MonoBehaviour
         long lost = score;
         score = 0;
 
-        shopController.RefreshOpenCostUI(); // ★追加
         return lost;
     }
 
@@ -418,7 +411,6 @@ public class GameManager : MonoBehaviour
 
         ShowUpgradeChoicesFromButton();
 
-        shopController.RefreshOpenCostUI();
     }
 
     void ShowUpgradeChoicesFromButton()
@@ -482,7 +474,6 @@ public class GameManager : MonoBehaviour
             deck.DiscardCount
         );
         handController.Render(hand, PlayCard);
-        shopController.RefreshOpenCostUI();
     }
 
     // ---- stage end / flow ----
@@ -599,6 +590,7 @@ public class GameManager : MonoBehaviour
         yield return "ステージは全部で３つ！";
         yield return "山札がなくなると捨て札がシャッフルされるよ！";
         yield return "手札は５枚が上限だよ！";
+        yield return "DPSはDrink Per Secondの略だよ";
         yield return "消滅したカードは次のステージで復活するよ！";
         yield return "カード効果は順番にすべて発動するよ！";
         yield return "アップグレードは積極的にしよう！";
@@ -649,7 +641,7 @@ public class GameManager : MonoBehaviour
         if (stage == 2)
             return 1000;
         if (stage == 3)
-            return 10000;
+            return 5000;
 
         return g;
     }

@@ -34,9 +34,16 @@ public class ShopController : MonoBehaviour
 
     void Update()
     {
-        // ショップが閉じている時だけ更新（開いてる最中はボタン触らないので）
-        if (!IsOpen)
-            UpdateOpenCostView();
+        if (openShopButton == null) return;
+
+        int cost = shopSystem.GetOpenCost();
+        long score = getScore?.Invoke() ?? 0;
+        bool ok = !modal.IsLocked && score >= cost;
+        Debug.Log(ok);
+
+        openShopButton.interactable = ok;
+
+        if (openCostText != null) openCostText.text = $"{cost}";
     }
 
     public void Init(
@@ -58,8 +65,6 @@ public class ShopController : MonoBehaviour
 
         openShopButton.onClick.AddListener(Open);
         closeShopButton.onClick.AddListener(Close);
-
-        UpdateOpenCostView();
     }
 
     public void Open()
@@ -70,7 +75,6 @@ public class ShopController : MonoBehaviour
         if (!tryPay(openCost))
         {
             AudioManager.Instance?.PlaySE(SEType.Error);
-            UpdateOpenCostView();
             return;
         }
 
@@ -87,7 +91,6 @@ public class ShopController : MonoBehaviour
     public void Close()
     {
         shopModal.SetActive(false);
-        UpdateOpenCostView();
         modal?.Unlock();
     }
 
@@ -128,26 +131,5 @@ public class ShopController : MonoBehaviour
                 tag: null
             );
         }
-    }
-
-    void UpdateOpenCostView()
-    {
-        if (openCostText == null || shopSystem == null)
-            return;
-
-        int cost = shopSystem.GetOpenCost();
-        openCostText.text = $"{cost}";
-
-        // 押せるかどうかで色を変える（任意）
-        bool canOpen = getScore != null && getScore() >= cost;
-        bool notLocked = (modal == null) || !modal.IsLocked;
-
-        if (openShopButton != null)
-            openShopButton.interactable = canOpen && notLocked;
-    }
-
-    public void RefreshOpenCostUI()
-    {
-        UpdateOpenCostView();
     }
 }
