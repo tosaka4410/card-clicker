@@ -2262,8 +2262,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 599d0149cd80d1e4397e9c6459dbb6fe, type: 2}
   - {fileID: 11400000, guid: 836e18252feba1f41b1c6d18abc46eed, type: 2}
   - {fileID: 11400000, guid: 836e18252feba1f41b1c6d18abc46eed, type: 2}
-  - {fileID: 11400000, guid: ab5cd07a0e89a004db9938bd5f47207d, type: 2}
-  - {fileID: 11400000, guid: cbd5d384193c59d45a510af38417aabd, type: 2}
+  - {fileID: 11400000, guid: 836e18252feba1f41b1c6d18abc46eed, type: 2}
+  - {fileID: 11400000, guid: 43f4c67bcd966124fa276bc7de2be9ad, type: 2}
   upgradeSystem: {fileID: 1412321702}
   shopSystem: {fileID: 530868845}
   relicSystem: {fileID: 2109147158}

@@ -545,6 +545,8 @@ public class GameManager : MonoBehaviour
         ended = true;
 
         SendUnityroomScore((int)MathF.Min(score, int.MaxValue));
+        MenuInfoController.SaveScores(score);
+
 
         resultController.Show(
             true,
