@@ -207,6 +207,7 @@ public class GameManager : MonoBehaviour
     void StartStage()
     {
         modalGuard.ForceReset();
+        modalGuard.Lock();
 
         AudioManager.Instance?.PlayBGM(BGMType.Stage);
         RefreshRelicHUD();
@@ -481,6 +482,7 @@ public class GameManager : MonoBehaviour
             deck.DiscardCount
         );
         handController.Render(hand, PlayCard);
+        shopController.RefreshOpenCostUI();
     }
 
     // ---- stage end / flow ----
@@ -591,21 +593,18 @@ public class GameManager : MonoBehaviour
 
     IEnumerable<string> BuildTickerMessages()
     {
-        yield return $"現在ステージ {CurrentStage} です。";
-        yield return "ステージ３をクリアするとゲームクリア！";
-        yield return "時間切れになるとゲームオーバーだよ。";
-        yield return "カードは使うと捨て札に行くよ。";
-        yield return "山札がなくなると捨て札がシャッフルされるよ。";
-        yield return "手札が上限を超えるとカードは引けないよ。";
-        yield return "強化されたカードはデッキに永続的に残る！";
-        yield return "消滅したカードは次のステージで復活するぞ！";
-        yield return "カード効果は順番にすべて発動するよ。";
-        yield return "アップグレードボタンでカードを強化できるぞ！";
-        yield return "強化でとんでもないコンボが生まれるかも！？";
-        yield return "カードのドローは５秒ごとに自動で行われるよ。";
-        yield return "「効果が倍増する」効果は時間を増やす効果にも適用されるよ。";
-        yield return "「効果が倍増する」効果は重複するよ。";
-        yield return "ショップでしか手に入らない効果もあるよ。";
+        yield return $"現在ステージ {CurrentStage} 。";
+        yield return "ステージは全部で３つ！";
+        yield return "山札がなくなると捨て札がシャッフルされるよ！";
+        yield return "手札は５枚が上限だよ！";
+        yield return "消滅したカードは次のステージで復活するよ！";
+        yield return "カード効果は順番にすべて発動するよ！";
+        yield return "アップグレードは積極的にしよう！";
+        yield return "とんでもないコンボが生まれるかも！？";
+        yield return "ドローは５秒ごとに自動で行われるよ！";
+        yield return "「効果が倍増する」効果は時間を増やす効果にも適用されるよ！";
+        yield return "「効果が倍増する」効果は重複するよ！";
+        yield return "ショップでしか手に入らない効果もあるよ！";
     }
 
     void SendUnityroomScore(int finalScore)
@@ -637,6 +636,7 @@ public class GameManager : MonoBehaviour
         // 3秒 + START表示0.35秒 と同じにしておく（上の実装と合わせる）
         yield return new WaitForSecondsRealtime(3f + 0.35f);
         isStarting = false;
+        modalGuard.Unlock(); 
     }
 
     private int GetGoalForStage(int stage)
