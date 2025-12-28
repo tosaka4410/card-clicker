@@ -300,8 +300,20 @@ public class GameManager : MonoBehaviour
     {
         if (score < amount)
             return false;
+
         score -= amount;
+
+        shopController.RefreshOpenCostUI(); // ★追加
         return true;
+    }
+
+    public long ConsumeAllScore()
+    {
+        long lost = score;
+        score = 0;
+
+        shopController.RefreshOpenCostUI(); // ★追加
+        return lost;
     }
 
     public void DrawCards(int amount)
@@ -331,13 +343,6 @@ public class GameManager : MonoBehaviour
         if (ended)
             return;
         timeLeft += seconds;
-    }
-
-    public long ConsumeAllScore()
-    {
-        long lost = score;
-        score = 0;
-        return lost;
     }
 
     // ---- card play ----
@@ -589,8 +594,6 @@ public class GameManager : MonoBehaviour
         yield return $"現在ステージ {CurrentStage} です。";
         yield return "ステージ３をクリアするとゲームクリア！";
         yield return "時間切れになるとゲームオーバーだよ。";
-        yield return "目標スコアを達成してステージを突破しよう！";
-        yield return "スコアはカードで増えていくよ。";
         yield return "カードは使うと捨て札に行くよ。";
         yield return "山札がなくなると捨て札がシャッフルされるよ。";
         yield return "手札が上限を超えるとカードは引けないよ。";
@@ -599,6 +602,10 @@ public class GameManager : MonoBehaviour
         yield return "カード効果は順番にすべて発動するよ。";
         yield return "アップグレードボタンでカードを強化できるぞ！";
         yield return "強化でとんでもないコンボが生まれるかも！？";
+        yield return "カードのドローは５秒ごとに自動で行われるよ。";
+        yield return "「効果が倍増する」効果は時間を増やす効果にも適用されるよ。";
+        yield return "「効果が倍増する」効果は重複するよ。";
+        yield return "ショップでしか手に入らない効果もあるよ。";
     }
 
     void SendUnityroomScore(int finalScore)

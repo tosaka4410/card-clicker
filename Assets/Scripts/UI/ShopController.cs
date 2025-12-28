@@ -64,6 +64,7 @@ public class ShopController : MonoBehaviour
 
     public void Open()
     {
+        if (modal != null && modal.IsLocked) return; 
         // ★開く時だけコスト
         int openCost = shopSystem.GetOpenCost();
         if (!tryPay(openCost))
@@ -139,9 +140,10 @@ public class ShopController : MonoBehaviour
 
         // 押せるかどうかで色を変える（任意）
         bool canOpen = getScore != null && getScore() >= cost;
+        bool notLocked = (modal == null) || !modal.IsLocked;
 
         if (openShopButton != null)
-            openShopButton.interactable = canOpen;
+            openShopButton.interactable = canOpen && notLocked;
     }
 
     public void RefreshOpenCostUI()

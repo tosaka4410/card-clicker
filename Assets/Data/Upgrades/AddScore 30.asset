@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 952048219fede084eafc8b19ee3467b9, type: 3}
+  m_Name: AddScore 30
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  title: "\u30B9\u30B3\u30A2\u309230\u5F97\u308B"
+  description: Add +80 score.
+  addEffect: {fileID: 11400000, guid: c22f759ebfa8ad5458b860dd5dcd89ba, type: 2}

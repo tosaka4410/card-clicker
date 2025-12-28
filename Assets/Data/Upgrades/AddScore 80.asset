@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 952048219fede084eafc8b19ee3467b9, type: 3}
-  m_Name: AddScore
+  m_Name: AddScore 80
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   title: "\u30B9\u30B3\u30A2\u309280\u5F97\u308B"
   description: Add +80 score.
