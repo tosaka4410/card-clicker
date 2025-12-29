@@ -112,13 +112,6 @@ public class GameManager : MonoBehaviour
     {
         ctx = new GameContext(this);
 
-        // チュートリアル未実施ならそちらへ
-        if (!TutorialState.IsCompleted)
-        {
-            SceneLoader.LoadTutorial();
-            return;
-        }
-
         // 初期値保存（最初の1回だけ）
         initialDeckSnapshot = new List<CardData>(startingDeck);
         initialGoal = goal;

@@ -1,8 +1,7 @@
 // Assets/Scripts/UI/TutorialController.cs
-// ※ 既存の TutrialController.cs をこれで差し替えてOK（クラス名は TutorialController）
-//    ファイル名とクラス名は一致しているのが望ましいです。
+// 既存の TutrialController.cs をこれで差し替えてOK（クラス名は TutorialController）
+// ローカルファイルは読まず、GitHub Pages のみを使用します。
 
-using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -17,7 +16,7 @@ public class TutorialController : MonoBehaviour
         [TextArea]
         public string body;
 
-        [Header("Video (StreamingAssets, optional)")]
+        [Header("Video (GitHub Pages, optional)")]
         [Tooltip("例: tutorial1.mp4（拡張子込み） 空なら画像を表示します")]
         public string videoFileName;
 
@@ -28,11 +27,14 @@ public class TutorialController : MonoBehaviour
         [Header("Video Options")]
         public bool loop = true;
 
-        [Tooltip(
-            "WebGLの自動再生がブロックされる場合、ONだと自動再生を試みます。ダメなら再生ボタン等で vp.Play() を呼んでください。"
-        )]
+        [Tooltip("自動再生を試みます（WebGLではユーザー操作がないとブロックされる場合あり）")]
         public bool autoPlay = true;
     }
+
+    [Header("Video Hosting")]
+    [Tooltip("例: https://tosaka4410.github.io/card-clicker/ （末尾/はどちらでもOK）")]
+    [SerializeField]
+    private string videoBaseUrl = "https://tosaka4410.github.io/card-clicker/";
 
     [Header("UI")]
     [SerializeField]
@@ -50,7 +52,7 @@ public class TutorialController : MonoBehaviour
     private VideoPlayer videoPlayer;
 
     [SerializeField]
-    private RawImage videoRawImage; // RenderTexture を貼る想定（なければ空でも可）
+    private RawImage videoRawImage; // RenderTexture貼る想定（なくてもOK）
 
     [Header("Buttons")]
     [SerializeField]
@@ -79,6 +81,7 @@ public class TutorialController : MonoBehaviour
                 index--;
                 Render();
             });
+
         if (nextButton != null)
             nextButton.onClick.AddListener(() =>
             {
@@ -87,16 +90,25 @@ public class TutorialController : MonoBehaviour
             });
 
         if (playButton != null)
-            playButton.onClick.AddListener(SceneLoader.LoadGame);
+            playButton.onClick.AddListener(() =>
+            {
+                // ★チュートリアル完了を保存してからゲームへ
+                TutorialState.SetCompleted(true);
+
+                // 念のため停止（動画の残処理が邪魔しないように）
+                StopAllCoroutines();
+                SceneLoader.LoadGame();
+            });
         if (backButton != null)
             backButton.onClick.AddListener(SceneLoader.LoadMenu);
 
-        // VideoPlayerの音を確実に消す（WebGLでも安全）
+        // VideoPlayerの音を確実に消す
         if (videoPlayer != null)
         {
             videoPlayer.audioOutputMode = VideoAudioOutputMode.None;
             videoPlayer.playOnAwake = false;
             videoPlayer.waitForFirstFrame = true;
+            videoPlayer.source = VideoSource.Url;
         }
 
         Render();
@@ -104,9 +116,7 @@ public class TutorialController : MonoBehaviour
 
     void OnDisable()
     {
-        // 画面が閉じるときにイベント解除＆停止
-        UnhookPrepareCompleted();
-        StopVideo();
+        StopVideo(); // 停止＆イベント解除
     }
 
     void Render()
@@ -148,7 +158,6 @@ public class TutorialController : MonoBehaviour
         }
         else
         {
-            // どちらも無し
             ShowVideo(false);
             StopVideo();
             ShowImage(false);
@@ -180,7 +189,7 @@ public class TutorialController : MonoBehaviour
         if (videoRawImage != null)
             videoRawImage.gameObject.SetActive(show);
         if (videoPlayer != null)
-            videoPlayer.gameObject.SetActive(show); // 必要ならON/OFF
+            videoPlayer.gameObject.SetActive(show);
     }
 
     void ShowImage(bool show)
@@ -197,41 +206,27 @@ public class TutorialController : MonoBehaviour
         if (videoPlayer == null)
             return;
 
-        // 多重登録防止（ページ切替で必須）
-        UnhookPrepareCompleted();
+        // 前の動画を確実に止めてイベント解除
+        StopVideo();
 
-        // URL生成（Editorは file:/// を付けると安定）
-        var url = ToVideoUrl(p.videoFileName);
-
-        // ファイル存在チェック（Editor/Standaloneでは効く。WebGLではfalseになり得る）
-#if !UNITY_WEBGL || UNITY_EDITOR
-        var physicalPath = Path.Combine(Application.streamingAssetsPath, p.videoFileName);
-        bool exists = File.Exists(physicalPath);
-        Debug.Log($"[Tutorial] Video physicalPath={physicalPath} exists={exists}");
-#endif
+        var url = BuildVideoUrl(p.videoFileName);
         Debug.Log($"[Tutorial] Video url={url}");
 
-        videoPlayer.Stop();
         videoPlayer.isLooping = p.loop;
-        videoPlayer.source = VideoSource.Url;
         videoPlayer.url = url;
 
-        // Prepare→完了でPlay（WebGLは自動再生がブロックされる場合あり）
+        // Prepare完了で再生（autoPlay=true のときだけ）
         videoPlayer.prepareCompleted += OnPrepared;
-        videoPlayer.errorReceived += OnVideoError; // 何かあったときログ出す
+        videoPlayer.errorReceived += OnVideoError;
 
         videoPlayer.Prepare();
 
-        // autoPlay=falseなら、外部ボタン等から videoPlayer.Play() を呼べる
-        if (!p.autoPlay)
-        {
-            // Prepareだけして待機（OnPrepared内でPlayしない）
-        }
+        // autoPlay=falseならPrepareだけして待機（外部ボタンから videoPlayer.Play() してOK）
+        // ※WebGLの自動再生ブロック対策にもなる
     }
 
     void OnPrepared(VideoPlayer vp)
     {
-        // 現在ページの設定を参照して再生判断
         var p = GetCurrentPageSafe();
         if (p == null)
         {
@@ -240,10 +235,7 @@ public class TutorialController : MonoBehaviour
         }
 
         if (p.autoPlay)
-        {
             vp.Play();
-        }
-        // autoPlay=false の場合はここでは再生しない（手動再生）
     }
 
     void OnVideoError(VideoPlayer vp, string message)
@@ -256,26 +248,23 @@ public class TutorialController : MonoBehaviour
         if (videoPlayer == null)
             return;
 
-        UnhookPrepareCompleted();
+        // イベント解除（必須：ページ切替で多重登録しない）
+        videoPlayer.prepareCompleted -= OnPrepared;
+        videoPlayer.errorReceived -= OnVideoError;
 
         if (videoPlayer.isPlaying)
             videoPlayer.Stop();
+        else
+            videoPlayer.Stop(); // Prepare中でも止める意図で呼ぶ
 
-        videoPlayer.errorReceived -= OnVideoError;
-
+        // RawImageにRenderTextureを貼ってる場合の残像対策（必要なら）
+        // targetTextureを使っていないなら不要
         if (videoPlayer.targetTexture != null)
         {
             RenderTexture.active = videoPlayer.targetTexture;
             GL.Clear(true, true, Color.clear);
             RenderTexture.active = null;
         }
-    }
-
-    void UnhookPrepareCompleted()
-    {
-        if (videoPlayer == null)
-            return;
-        videoPlayer.prepareCompleted -= OnPrepared;
     }
 
     Page GetCurrentPageSafe()
@@ -286,19 +275,19 @@ public class TutorialController : MonoBehaviour
         return pages[i];
     }
 
-    string ToVideoUrl(string fileName)
+    string BuildVideoUrl(string fileName)
     {
-        // StreamingAssets 内のパス
-        string path = Path.Combine(Application.streamingAssetsPath, fileName);
-        path = path.Replace("\\", "/");
+        // baseUrl末尾を/に揃える
+        var baseUrl = string.IsNullOrEmpty(videoBaseUrl) ? "" : videoBaseUrl.Trim();
+        if (!baseUrl.EndsWith("/"))
+            baseUrl += "/";
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-        // WebGLはHTTP(S)で配信されるパスになることが多いのでそのまま
-        return path;
-#else
-        // Editor/Standaloneは file:// を付けると安定
-        // 先頭のスラッシュ数を揃える（Windows対応）
-        return "file:///" + path;
-#endif
+        // fileName先頭の/を除去（ダブり防止）
+        var f = (fileName ?? "").Trim();
+        while (f.StartsWith("/"))
+            f = f.Substring(1);
+
+        // URLは必ず / で連結（Path.Combine禁止）
+        return baseUrl + f;
     }
 }

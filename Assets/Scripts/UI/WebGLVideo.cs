@@ -12,7 +12,7 @@ public class WebGLVideo : MonoBehaviour
         vp.source = VideoSource.Url;
         vp.audioOutputMode = VideoAudioOutputMode.None;
 
-        vp.url = System.IO.Path.Combine(Application.streamingAssetsPath, fileName);
+        vp.url = "https://tosaka4410.github.io/card-clicker/" + fileName;
 
         // 自動再生はブラウザに止められることがあるので、基本はユーザー操作後に Play 推奨
         vp.Prepare();

@@ -20,7 +20,16 @@ public class MenuController : MonoBehaviour
     void Start()
     {
         if (startButton != null)
-            startButton.onClick.AddListener(SceneLoader.LoadGame);
+        {
+            startButton.onClick.RemoveAllListeners();
+            startButton.onClick.AddListener(() =>
+            {
+                if (TutorialState.IsCompleted())
+                    SceneLoader.LoadGame();
+                else
+                    SceneLoader.LoadTutorial();
+            });
+        }
 
         if (tutorialButton != null)
             tutorialButton.onClick.AddListener(SceneLoader.LoadTutorial);
