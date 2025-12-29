@@ -84,8 +84,17 @@ public class GameManager : MonoBehaviour
     private int totalUpgradeCount = 0;
 
     // 一時バフ管理
+    [System.Serializable]
+    private class TimedMul
+    {
+        public float mul;
+        public float timeLeft;
+    }
+
+    private readonly List<TimedMul> scoreMuls = new();
     private float tempScoreMultiplier = 1f;
-    private float tempScoreTimer = 0f;
+
+    public float GetTempScoreMultiplier() => tempScoreMultiplier;
 
     private readonly ModalGuard modalGuard = new();
     public ModalGuard ModalGuard => modalGuard;
@@ -178,7 +187,8 @@ public class GameManager : MonoBehaviour
             lastMeasuredScorePerSec,
             relicSystem.GetAllOwnedCounts(),
             deck.DrawCount,
-            deck.DiscardCount
+            deck.DiscardCount,
+            GetEffectiveCardScoreMultiplier()
         );
 
         if (timeLeft <= 0f)
@@ -187,16 +197,25 @@ public class GameManager : MonoBehaviour
             EndStage(score >= goal);
         }
 
-        // 一時スコアバフの減衰
-        if (tempScoreTimer > 0f)
+        // 一時スコアバフ（複数）の減衰
+        if (scoreMuls.Count > 0)
         {
-            tempScoreTimer -= Time.deltaTime;
-            if (tempScoreTimer <= 0f)
+            bool changed = false;
+
+            for (int i = scoreMuls.Count - 1; i >= 0; i--)
             {
-                tempScoreMultiplier = 1f;
-                tempScoreTimer = 0f;
+                scoreMuls[i].timeLeft -= Time.deltaTime;
+                if (scoreMuls[i].timeLeft <= 0f)
+                {
+                    scoreMuls.RemoveAt(i);
+                    changed = true;
+                }
             }
+
+            if (changed)
+                RecalcTempScoreMultiplier();
         }
+
         if (countdownController != null)
         {
             bool isGoalMet = score >= goal;
@@ -212,7 +231,6 @@ public class GameManager : MonoBehaviour
 
         AudioManager.Instance?.PlayBGM(BGMType.Stage);
         RefreshRelicHUD();
-
 
         isStarting = true;
         countdownController?.PlayStartCountdown(
@@ -254,7 +272,8 @@ public class GameManager : MonoBehaviour
             lastMeasuredScorePerSec,
             relicSystem.GetAllOwnedCounts(),
             deck.DrawCount,
-            deck.DiscardCount
+            deck.DiscardCount,
+            GetEffectiveCardScoreMultiplier()
         );
         handController.Render(hand, PlayCard);
     }
@@ -347,7 +366,7 @@ public class GameManager : MonoBehaviour
             return;
         if (modalGuard.IsLocked)
             return;
-        if(isStarting)
+        if (isStarting)
             return;
 
         long before = score;
@@ -360,9 +379,21 @@ public class GameManager : MonoBehaviour
         ctx.Multiplier = 1;
         ctx.ExhaustThisCard = false;
 
+        // 1) 先に “状態系” を適用（Multiplier/Exhaustなど）
         foreach (var e in card.effects)
         {
             if (e == null)
+                continue;
+            if (e is DoubleAndExhaustEffect) // 状態系をここに増やしていける
+                e.Apply(ctx);
+        }
+
+        // 2) 次に “通常効果” を適用
+        foreach (var e in card.effects)
+        {
+            if (e == null)
+                continue;
+            if (e is DoubleAndExhaustEffect)
                 continue;
             e.Apply(ctx);
         }
@@ -414,7 +445,6 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance?.PlaySE(SEType.Buy);
 
         ShowUpgradeChoicesFromButton();
-
     }
 
     void ShowUpgradeChoicesFromButton()
@@ -475,7 +505,8 @@ public class GameManager : MonoBehaviour
             lastMeasuredScorePerSec,
             relicSystem.GetAllOwnedCounts(),
             deck.DrawCount,
-            deck.DiscardCount
+            deck.DiscardCount,
+            GetEffectiveCardScoreMultiplier()
         );
         handController.Render(hand, PlayCard);
     }
@@ -541,7 +572,6 @@ public class GameManager : MonoBehaviour
 
         SendUnityroomScore(score);
         MenuInfoController.SaveScores(score);
-
 
         resultController.Show(
             true,
@@ -623,8 +653,20 @@ public class GameManager : MonoBehaviour
 
     public void AddTempScoreMultiplier(float multiplier, float duration)
     {
-        tempScoreMultiplier *= multiplier;
-        tempScoreTimer = Mathf.Max(tempScoreTimer, duration);
+        multiplier = Mathf.Max(1f, multiplier);
+        duration = Mathf.Max(0f, duration);
+
+        scoreMuls.Add(new TimedMul { mul = multiplier, timeLeft = duration });
+        RecalcTempScoreMultiplier();
+    }
+
+    private void RecalcTempScoreMultiplier()
+    {
+        float m = 1f;
+        for (int i = 0; i < scoreMuls.Count; i++)
+            m *= scoreMuls[i].mul;
+
+        tempScoreMultiplier = m;
     }
 
     public long GetScore() => score;
@@ -634,7 +676,7 @@ public class GameManager : MonoBehaviour
         // 3秒 + START表示0.35秒 と同じにしておく（上の実装と合わせる）
         yield return new WaitForSecondsRealtime(3f + 0.35f);
         isStarting = false;
-        modalGuard.Unlock(); 
+        modalGuard.Unlock();
     }
 
     private int GetGoalForStage(int stage)
@@ -648,5 +690,17 @@ public class GameManager : MonoBehaviour
             return 5000;
 
         return g;
+    }
+
+    public float GetEffectiveCardScoreMultiplier()
+    {
+        float mul = 1f;
+        if (relicSystem != null)
+        {
+            mul *= relicSystem.ScoreMultiplier;
+            mul *= relicSystem.CardScoreMultiplier;
+        }
+        mul *= tempScoreMultiplier;
+        return mul;
     }
 }

@@ -9,7 +9,8 @@ public class AddScorePercentOfCurrentEffect : CardEffect
     public override void Apply(GameContext ctx)
     {
         long cur = ctx.GetScore();
-        long add = Mathf.FloorToInt(cur * percent);
+        // Use Math.Floor with widening to double and cast to long to avoid int overflow/truncation
+        long add = (long)System.Math.Floor((double)cur * percent);
 
         Debug.Log($"[Effect] AddScorePercent cur={cur} percent={percent} add={add}");
 

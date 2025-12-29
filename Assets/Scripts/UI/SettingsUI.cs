@@ -48,6 +48,7 @@ public class SettingsUI : MonoBehaviour
 
     public void Open()
     {
+        if(modal != null && modal.IsLocked) return;
         modal?.Lock();
         settingsModal.SetActive(true);
         settingsModal.transform.SetAsLastSibling();

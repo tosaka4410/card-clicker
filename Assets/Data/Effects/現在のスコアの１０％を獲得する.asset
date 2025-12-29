@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 210d79318bd052f4caa975164747f136, type: 3}
-  m_Name: "\u73FE\u5728\u306E\u30B9\u30B3\u30A2\u306E\uFF13\uFF10\uFF05\u3092\u7372\u5F97\u3059\u308B"
+  m_Name: "\u73FE\u5728\u306E\u30B9\u30B3\u30A2\u306E\uFF11\uFF10\uFF05\u3092\u7372\u5F97\u3059\u308B"
   m_EditorClassIdentifier: Assembly-CSharp::AddScorePercentOfCurrentEffect
-  percent: 0.3
+  percent: 0.1

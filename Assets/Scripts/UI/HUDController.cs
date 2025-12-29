@@ -23,6 +23,9 @@ public class HUDController : MonoBehaviour
     [SerializeField]
     private Text discardText;
 
+    [SerializeField]
+    private Text multiplierText;
+
     [Header("Relics")]
     [SerializeField]
     private Text relicText; // 複数行表示用
@@ -34,7 +37,8 @@ public class HUDController : MonoBehaviour
         long scorePerSec,
         IReadOnlyDictionary<RelicData, int> relicCounts,
         int deckCount,
-        int discardCount
+        int discardCount,
+        float tempMul
     )
     {
         timeText.text = $"{timeLeft:0.0}s";
@@ -46,6 +50,10 @@ public class HUDController : MonoBehaviour
 
         if (discardText != null)
             discardText.text = $"{discardCount}";
+        if (multiplierText != null)
+        {
+            multiplierText.text = tempMul > 1.001f ? $"x{tempMul:0.##}" : "x1.0";
+        }
 
         if (relicText != null)
         {

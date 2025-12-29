@@ -29,6 +29,7 @@ public class DeckViewController : MonoBehaviour
 
     public void Open()
     {
+        if(modal != null && modal.IsLocked) return;
         modal?.Lock();
         deckViewModal.SetActive(true);
         Refresh();
