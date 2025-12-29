@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 952048219fede084eafc8b19ee3467b9, type: 3}
   m_Name: ScorePercent
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
-  title: "\u73FE\u5728\u306E\u30B9\u30B3\u30A2\u306E\uFF13\uFF10\uFF05\u3092\u7372\u5F97\u3059\u308B"
+  title: "\u73FE\u5728\u306E\u30B9\u30B3\u30A2\u306E\uFF11\uFF10\uFF05\u3092\u7372\u5F97\u3059\u308B"
   description: 
   addEffect: {fileID: 11400000, guid: b378a3c5bb8c1934aa007daf621ff4a6, type: 2}
